@@ -1,0 +1,196 @@
+* {
+	margin:0;
+	padding: 0;
+	/*规定两个并排的带边框的框*/
+	box-sizing: border-box;
+}
+body {
+	width: 100%;
+	height: 100vh;
+	/*在弹性盒对象的 <div> 元素中的各项周围留有空白  下面两个语句的共同作用*/
+	display: flex;
+	justify-content: center;
+	/*居中对齐弹性盒的各项 <div> 元素*/
+	align-items: center;
+	background: #001f00;
+}
+body:before {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 250px;
+	background: #fff;
+}
+/*树*/
+.tree {
+     position: relative;
+     width: 400px;
+     height: 400px;  
+}
+.tree:before {
+	content: '';
+	position: absolute;
+	bottom: -70px;
+	left: 0;
+	width: 100%;
+	height: 100px;
+	/*圆角*/
+	border-radius: 50%;
+    /*透明度*/
+	background:rgba(0,0,0,.1);
+}
+.tree:after {
+	content: '';
+	position: absolute;
+	bottom: -40px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 60px;
+	height: 40px;
+	background: #734500;
+}
+.tree div {
+	position: absolute;
+	width: 100%;
+	height: 200px;
+	bottom: 0;
+	/*弹性布局*/
+	display: flex;
+}
+ /*tree中的div的第二个*/
+.tree div:nth-child(2) {
+	transform: translateY(-100px) scale(0.8);
+	z-index: 1;
+}
+/*tree中的div的第三个*/
+.tree div:nth-child(3) {
+	transform: translateY(-175px) scale(0.6);
+	/*跳整层级*/
+	z-index: 1;
+}
+/*tree中的div的第四个*/
+.tree div:nth-child(4) {
+	transform: translateY(-240px) scale(0.4);
+	z-index: 1;
+}
+/*tree中的div的第五个*/
+.tree div:nth-child(5) {
+	transform: translateY(-280px) scale(0.2);
+	z-index: 1;
+}
+.tree div span {
+	position: relative;
+	width: 50%;
+	height: 100%;
+	display: block;
+	/*溢出隐藏 有清除浮动的效果 */
+	overflow: hidden;
+}
+.tree div span:nth-child(1):before {
+	content:'';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 200%;
+	height:100%;
+	/*渐变效果*/
+	background: linear-gradient(#00b300,#0f0);
+	/*向 div 元素的左上角添加圆角边框*/
+	border-top-left-radius: 110% 100%;
+	/*向 div 元素的右上角添加圆角边框*/
+	border-top-right-radius: 0% 100%;
+	/*向 div 元素的左下角添加圆角边框*/
+	border-bottom-left-radius: 50% 20%;
+	/*向 div 元素的右下角添加圆角边框*/
+	border-bottom-right-radius: 50% 20%;
+}
+.tree div span:nth-child(2):before {
+	content:'';
+	position: absolute;
+	top: 0;
+	left: 0;
+	left: -100%;
+	width: 200%;
+	height:100% ;
+	/*同上*/
+	background: linear-gradient(#00b300,#0f0);
+	/*同上*/
+	border-top-left-radius: 0% 100%;
+	/*同上*/
+	border-top-right-radius: 110% 100%;
+	/*同上*/
+	border-bottom-left-radius: 50% 20%;
+	/*同上*/
+	border-bottom-right-radius: 50% 20%;
+}
+/*雪*/
+.snow {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height:100vh; 
+ 	/*溢出隐藏 有清除浮动的效果 */
+   overflow: hidden;
+}
+.snow .snow1 {
+	position: absolute;
+	top: 0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	/*加入背景图片  这里是雪花飘*/
+	background: url(snow.png);
+	z-index:1000;
+	/*颜色的混合模式*/
+	mix-blend-mode: screen;
+	animation: animate 2s linear infinite;
+	/*放缩2倍*/
+    transform: scale(2);
+}
+.snow .snow2 {
+	position: absolute;
+	top: 0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	/*加入背景图片  这里是雪花飘*/
+	background: url(snow.png);
+	z-index:1000;
+	mix-blend-mode: screen;
+/*设置动画的属性 id  过度时间 */
+	animation: animate 5s linear infinite;
+	/*放缩1倍*/
+	transform: scale(1);
+	filter: blur(1px);
+}
+.snow .snow3 {
+	position: absolute;
+	top: 0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	/*加入背景图片  这里是雪花飘*/
+	background: url(snow.png);
+	z-index:1000;
+	mix-blend-mode: screen;
+	/*设置动画的属性*/
+	animation: animate 5s linear infinite;
+	/*放缩1.5倍*/
+	transform: scale(1.5);
+}
+/*封装动画集*/
+@keyframes animate {
+	0%
+	{
+		/*调整背景图片的位置*/
+       background-position: 0 0;
+	}
+	100%
+	{
+		/*调整背景图片的位置*/
+		background-position: 0 506px;
+	}
+}
