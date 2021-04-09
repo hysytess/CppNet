@@ -3,9 +3,9 @@
 ## 介绍
 > 这是一个简易跨平台TCP/UDP服务器程序，仓库会同步每个版本的迭代进度。
 
-- EasyTcpClientGO、1.0-1.2 版本简易 winsocket 服务器程序.
+- EasyTcpClientGO、1.0-1.2 版本：简易 winsocket 服务器程序.
 
-- 1.3-1.5 版本简易 select 服务器程序.
+- 1.3-1.5 版本：简易 select 服务器程序.
 
 
 ## 使用教程
@@ -13,7 +13,7 @@
 1.  下载
 2.  解压
 3.  启动EasyTcpServer
-4.  启动EasyTcpClien
+4.  启动EasyTcpClient
 
 ## 使用说明
 
