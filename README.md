@@ -1,7 +1,7 @@
 # CppNet
 
 #### 介绍
-Easy TCP/UDP server demo base on cplusplus
+Easy TCP/UDP cross platform servers program base on cplusplus
 
 #### 软件架构
 软件架构说明

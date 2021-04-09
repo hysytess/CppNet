@@ -152,6 +152,9 @@
   <ItemGroup>
     <ClCompile Include="EasyTcpClientGo_main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="test.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,7 +1,7 @@
 # CppNet
 
 #### Description
-Easy TCP/UDP server demo base on cplusplus
+Easy TCP/UDP cross platform servers program base on cplusplus
 
 #### Software Architecture
 Software architecture description
