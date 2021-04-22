@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{AD324E60-5C13-480D-9D5E-D2C6F68E35B6}</ProjectGuid>
-    <RootNamespace>EasyTcpServer18</RootNamespace>
+    <ProjectGuid>{B4C4B1C8-DC21-446B-9F8D-8C0E5D7CC504}</ProjectGuid>
+    <RootNamespace>EasyTcpServer181</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -91,7 +91,6 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,7 +103,6 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,7 +117,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,7 +133,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,12 +142,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="EasyTcpServer1_8_main.cpp" />
+    <ClInclude Include="CELLTask.hpp" />
+    <ClInclude Include="CELLTimestamp.hpp" />
+    <ClInclude Include="EasyTcpServer1_8_1.hpp" />
+    <ClInclude Include="MessageHeader.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CELLTimestamp.hpp" />
-    <ClInclude Include="EasyTcpServer1_8.hpp" />
-    <ClInclude Include="MessageHeader.hpp" />
+    <ClCompile Include="EasyTcpServer1_8_1_main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

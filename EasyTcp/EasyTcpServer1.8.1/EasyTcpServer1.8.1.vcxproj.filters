@@ -15,19 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EasyTcpServer1_8_main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CELLTimestamp.hpp">
+    <ClInclude Include="CELLTask.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="EasyTcpServer1_8.hpp">
+    <ClInclude Include="CELLTimestamp.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MessageHeader.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="EasyTcpServer1_8_1.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EasyTcpServer1_8_1_main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
