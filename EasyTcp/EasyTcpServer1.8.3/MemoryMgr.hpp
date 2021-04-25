@@ -12,7 +12,7 @@
 #define xPrintf(...)
 #endif
 
-#define  MAX_MEMORY_SIZE 1024
+#define  MAX_MEMORY_SIZE 128
 
 class MemoryAlloc; // 提前声明
 
@@ -168,9 +168,9 @@ private:
 	{
 		init_szAlloc(0, 64, &_mem64);
 		init_szAlloc(65, 128, &_mem128);
-		init_szAlloc(129, 256, &_mem256);
-		init_szAlloc(257, 512, &_mem512);
-		init_szAlloc(513, 1024, &_mem1024);
+		//init_szAlloc(129, 256, &_mem256);
+		//init_szAlloc(257, 512, &_mem512);
+		//init_szAlloc(513, 1024, &_mem1024);
 	};
 	~MemoryMgr()
 	{
@@ -234,12 +234,12 @@ private:
 	}
 private:
 	// 内存池建立
-	MemoryAlloctor<64, 100000> _mem64;
-	MemoryAlloctor<128, 100000> _mem128;
-	MemoryAlloctor<256, 100000> _mem256;
-	MemoryAlloctor<512, 100000> _mem512;
-	MemoryAlloctor<1024, 100000> _mem1024;
-
+	MemoryAlloctor<64, 1000000> _mem64;
+	MemoryAlloctor<128, 1000000> _mem128;
+	//MemoryAlloctor<256, 1000000> _mem256;
+	//MemoryAlloctor<512, 1000000> _mem512;
+	//MemoryAlloctor<1024, 1000000> _mem1024;
+	// 映射表
 	MemoryAlloc* _szAlloc[MAX_MEMORY_SIZE + 1];
 };
 
