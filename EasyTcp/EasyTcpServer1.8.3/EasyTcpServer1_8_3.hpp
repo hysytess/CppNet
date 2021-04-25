@@ -54,10 +54,10 @@ public:
 	ClientSocket(SOCKET sock = INVALID_SOCKET)
 	{
 		_sockfd = sock;
-		memset(_szMsgBuf, 0, sizeof(RECV_BUFF_SZIE));
+		memset(_szMsgBuf, 0, RECV_BUFF_SZIE);
 		_lastPos = 0;
 
-		memset(_szSendBuf, 0, sizeof(SEND_BUFF_SZIE));
+		memset(_szSendBuf, 0, SEND_BUFF_SZIE);
 		_lastSendPos = 0;
 	}
 	SOCKET sockfd()
@@ -199,8 +199,8 @@ public:
 #else
 			for (auto iter : _clients)
 			{
-				closesocket(iter->second->sockfd());
-				delete iter->second;
+				closesocket(iter.second->sockfd());
+				delete iter.second;
 			}
 			close(_sock);
 #endif
@@ -314,7 +314,6 @@ public:
 				_clients.erase(pClient->sockfd());
 				delete pClient;
 			}
-
 #endif
 		}
 		return;
@@ -331,7 +330,7 @@ public:
 			return -1;
 		}
 
-		memcpy(pClient->msgBuf() + pClient->getLastPos(), szRecv, nLen);
+		//memcpy(pClient->msgBuf() + pClient->getLastPos(), szRecv, nLen);
 
 		pClient->setLastPos(pClient->getLastPos() + nLen);
 
