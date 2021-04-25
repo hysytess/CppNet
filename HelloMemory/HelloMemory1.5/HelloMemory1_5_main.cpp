@@ -1,3 +1,4 @@
+// v1.5 支持多线程
 #include <stdlib.h>
 
 int main(int argc, char* argv)
