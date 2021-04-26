@@ -1,17 +1,25 @@
 #ifndef _MEMORYMGR_H_
 #define _MEMORYMGT_H_
+#include "Alloctor.h"
+#include <thread>
 #include <mutex>
 #include <stdlib.h>
+#include <stdio.h>
+#include <memory>
 #include <assert.h> //调试使用
 
 #ifdef _DEBUG
+#ifndef xPrintf
 #include <stdio.h>
 #define xPrintf(...) printf(__VA_ARGS__)
+#endif
 #else
+#ifndef xPrintf
 #define xPrintf(...)
 #endif
+#endif
 
-#define  MAX_MEMORY_SIZE 128
+#define  MAX_MEMORY_SIZE 1024
 
 class MemoryAlloc; // 提前声明
 
@@ -44,7 +52,6 @@ public:
 		_pHeader = nullptr;
 		_nSize = 0;
 		_nBlockSize = 0;
-		//xPrintf("MemoryAlloc\n");
 	};
 	~MemoryAlloc()
 	{
@@ -59,7 +66,6 @@ public:
 		{
 			initMemory();
 		}
-
 		MemoryBlock* pReturn = nullptr;
 		// 申请不符合内存单元规格 或者内存池已满
 		if (!_pHeader)
@@ -70,7 +76,6 @@ public:
 			pReturn->nRef = 1;
 			pReturn->pAlloc = nullptr;
 			pReturn->pNext = nullptr;
-			//printf("allocMem: %llx, id=%d, size=%d\n", pReturn, pReturn->nID, nSize);
 		}
 		else
 		{
@@ -106,13 +111,12 @@ public:
 
 	void initMemory()
 	{
-		//xPrintf("initMemory:_nSize=%d,_nBlockSize=%d\n", _nSize, _nBlockSize);
 		assert(nullptr == _pBuf);
 		if (_pBuf)
 			return;
 		// 1 计算池大小,向系统申请内存
 		size_t realSize = _nSize + sizeof(MemoryBlock);
-		size_t bufSize = realSize * _nBlockSize;
+		size_t bufSize = (_nSize + sizeof(MemoryBlock))* _nBlockSize;
 		_pBuf = (char*)malloc(bufSize);
 		// 2 初始化第一个的信息
 		_pHeader = (MemoryBlock*)_pBuf;
@@ -126,7 +130,7 @@ public:
 		MemoryBlock* pTemp1 = _pHeader;
 		for (size_t n = 1; n < _nBlockSize; n++)
 		{
-			MemoryBlock* pTemp2 = (MemoryBlock*)(_pBuf + (n * realSize));
+			MemoryBlock* pTemp2 = (MemoryBlock*)(_pBuf + (n*realSize));
 			pTemp2->bPool = true;
 			pTemp2->nID = n;
 			pTemp2->nRef = 0;
@@ -171,9 +175,9 @@ private:
 	{
 		init_szAlloc(0, 64, &_mem64);
 		init_szAlloc(65, 128, &_mem128);
-		//init_szAlloc(129, 256, &_mem256);
-		//init_szAlloc(257, 512, &_mem512);
-		//init_szAlloc(513, 1024, &_mem1024);
+		init_szAlloc(129, 256, &_mem256);
+		init_szAlloc(257, 512, &_mem512);
+		init_szAlloc(513, 1024, &_mem1024);
 	}
 	~MemoryMgr()
 	{
@@ -224,7 +228,7 @@ public:
 	void addRef(void* pMem)
 	{
 		MemoryBlock* pBlock = (MemoryBlock*)((char*)pMem - sizeof(MemoryBlock));
-		++pBlock->nRef;
+		pBlock->nRef++;
 	}
 private:
 	// 初始化内存池映射表
@@ -237,12 +241,12 @@ private:
 	}
 private:
 	// 内存池建立
-	MemoryAlloctor<64, 4000000> _mem64;
-	MemoryAlloctor<128, 2000000> _mem128;
-	//MemoryAlloctor<256, 1000000> _mem256;
-	//MemoryAlloctor<512, 1000000> _mem512;
-	//MemoryAlloctor<1024, 1000000> _mem1024;
-	// 映射表
+	MemoryAlloctor<64, 100000> _mem64;
+	MemoryAlloctor<128, 100000> _mem128;
+	MemoryAlloctor<256, 100000> _mem256;
+	MemoryAlloctor<512, 100000> _mem512;
+	MemoryAlloctor<1024, 100000> _mem1024;
+
 	MemoryAlloc* _szAlloc[MAX_MEMORY_SIZE + 1];
 };
 

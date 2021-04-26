@@ -171,7 +171,6 @@ private:
 	INetEvent* _pNetEvent;
 	CellTaskServer _taskServer;
 public:
-	std::atomic_int _recvCount;
 
 	CellServer(SOCKET sock = INVALID_SOCKET)
 	{
@@ -318,7 +317,6 @@ public:
 			}
 #endif
 		}
-		return;
 	}
 
 	int RecvData(ClientSocketPtr& pClient)
@@ -661,8 +659,7 @@ public:
 			//SendData(pClient, &ret);
 			// 不安全写法 将业务层暴露给用户(应用层)
 			auto ret = std::make_shared<LoginResult>();
-
-			pCellServer->addSendTask(pClient, (DataHeaderPtr&)ret);
+			pCellServer->addSendTask(pClient, (DataHeaderPtr&)ret); //
 		}
 		break;
 		case CMD_LOGOUT:

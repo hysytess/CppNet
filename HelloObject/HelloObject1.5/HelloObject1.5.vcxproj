@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{478B102A-9086-40AB-9216-7653FA5F2DEC}</ProjectGuid>
-    <RootNamespace>HelloMemory18</RootNamespace>
+    <ProjectGuid>{90BD0E35-7EAD-471E-B892-4887B979D413}</ProjectGuid>
+    <RootNamespace>HelloObject15</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -142,12 +142,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Alloctor.h" />
-    <ClInclude Include="MemoryMgr.hpp" />
+    <ClCompile Include="Alloctor.cpp" />
+    <ClCompile Include="HelloObject1_5_main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Alloctor.cpp" />
-    <ClCompile Include="HelloMemory1_8_main.cpp" />
+    <ClInclude Include="Alloctor.h" />
+    <ClInclude Include="HelloObjectPool.hpp" />
+    <ClInclude Include="MemoryMgr.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

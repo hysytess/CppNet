@@ -26,12 +26,8 @@ private:
 	std::list<CellTaskPtr> _tasksBuff;
 	std::mutex _mutex;
 public:
-	CellTaskServer()
-	{
-	}
-	~CellTaskServer()
-	{
-	}
+	CellTaskServer() {}
+	~CellTaskServer() {}
 	//添加任务到缓冲区队列
 	void addTask(CellTaskPtr& task)
 	{

@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloMemoryGo", "HelloMemor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloMemory1.5", "HelloMemory1.5\HelloMemory1.5.vcxproj", "{553AF162-0A81-4480-86B1-EA10C36A3F2A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloMemory1.8", "HelloMemory1.8\HelloMemory1.8.vcxproj", "{478B102A-9086-40AB-9216-7653FA5F2DEC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -33,14 +31,6 @@ Global
 		{553AF162-0A81-4480-86B1-EA10C36A3F2A}.Release|x64.Build.0 = Release|x64
 		{553AF162-0A81-4480-86B1-EA10C36A3F2A}.Release|x86.ActiveCfg = Release|Win32
 		{553AF162-0A81-4480-86B1-EA10C36A3F2A}.Release|x86.Build.0 = Release|Win32
-		{478B102A-9086-40AB-9216-7653FA5F2DEC}.Debug|x64.ActiveCfg = Debug|x64
-		{478B102A-9086-40AB-9216-7653FA5F2DEC}.Debug|x64.Build.0 = Debug|x64
-		{478B102A-9086-40AB-9216-7653FA5F2DEC}.Debug|x86.ActiveCfg = Debug|Win32
-		{478B102A-9086-40AB-9216-7653FA5F2DEC}.Debug|x86.Build.0 = Debug|Win32
-		{478B102A-9086-40AB-9216-7653FA5F2DEC}.Release|x64.ActiveCfg = Release|x64
-		{478B102A-9086-40AB-9216-7653FA5F2DEC}.Release|x64.Build.0 = Release|x64
-		{478B102A-9086-40AB-9216-7653FA5F2DEC}.Release|x86.ActiveCfg = Release|Win32
-		{478B102A-9086-40AB-9216-7653FA5F2DEC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
