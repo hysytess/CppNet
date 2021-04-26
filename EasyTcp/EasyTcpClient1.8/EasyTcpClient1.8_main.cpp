@@ -43,7 +43,7 @@ void sendThread(int id)
 	for (int i = start; i < end; i++)
 	{
 		if (!g_bRun) return;
-		if (SOCKET_ERROR != client[i]->Connect("192.168.80.1", 4567))
+		if (SOCKET_ERROR != client[i]->Connect("127.0.0.1", 4567))
 		{
 			//std::cout << "thread<" << id << ">,client<" << client_cnt << "> connected.\n";
 			client_cnt++;
@@ -53,7 +53,7 @@ void sendThread(int id)
 	readyCount++;
 	while (readyCount < tCount)
 	{
-		std::chrono::milliseconds t(100);
+		std::chrono::milliseconds t(10);
 		std::this_thread::sleep_for(t);
 	}
 
@@ -68,7 +68,8 @@ void sendThread(int id)
 	const int nLen = sizeof(login);
 	while (g_bRun)
 	{
-		for (int i = start; i < end; i++) {
+		for (int i = start; i < end; i++)
+		{
 			if (SOCKET_ERROR != client[i]->SendData(login, nLen))
 			{
 				sendcnt++;
