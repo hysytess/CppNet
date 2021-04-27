@@ -1,4 +1,4 @@
-// 加入智能指针 shared_ptr
+// version1.8.6 加入对象池
 
 #include "Alloctor.h"
 #include "EasyTcpServer1_8_5.hpp"

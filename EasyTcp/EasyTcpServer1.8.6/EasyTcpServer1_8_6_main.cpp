@@ -1,6 +1,6 @@
-// 加入高精度包计数器
-
-#include "EasyTcpServer1_8.hpp"
+// 加入对象池
+#include "Alloctor.h"
+#include "EasyTcpServer1_8_6.hpp"
 
 bool g_bRun = true;
 

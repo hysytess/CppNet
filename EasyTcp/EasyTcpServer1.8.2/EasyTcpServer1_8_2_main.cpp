@@ -1,4 +1,6 @@
-#include "EasyTcpServer1_8_1.hpp"
+// 优化代码结构
+
+#include "MyServer1_8_2.hpp"
 
 bool g_bRun = true;
 

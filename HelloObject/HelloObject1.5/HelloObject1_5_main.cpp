@@ -81,11 +81,15 @@ int main(int argc, char* argv)
 	//ClassB::destroyObject(b2);
 	//ClassB::destroyObject(b3);
 
-	for (int i = 0; i < tCount; i++)
-	{
-		std::thread t(workFun, i);
-		t.join();
-	}
+	//for (int i = 0; i < tCount; i++)
+	//{
+	//	std::thread t(workFun, i);
+	//	t.join();
+	//}
 
+	{
+		std::shared_ptr<ClassA> s1 = std::make_shared<ClassA>(5); // 不受对象池管理的共享指针对象
+		std::shared_ptr<ClassA> s2(new ClassA(6)); // 接受对象池管理的共享指针对象
+	}
 	return 0;
 }

@@ -35,8 +35,8 @@
 
 //缓冲区最小单元大小
 #ifndef RECV_BUFF_SZIE
-#define RECV_BUFF_SZIE 10240*5
-#define SEND_BUFF_SZIE 10240*5
+#define RECV_BUFF_SZIE 10240
+#define SEND_BUFF_SZIE 10240
 #endif // !RECV_BUFF_SZIE
 #define _Cell_THREAD_CONT 4
 
@@ -97,7 +97,7 @@ public:
 				//计算剩余数据长度
 				pSendData += nCopyLen;
 				//剩余数据长度
-				nSendLen -= nSendLen;
+				nSendLen -= nCopyLen;
 				ret = send(_sockfd, _szSendBuf, SEND_BUFF_SZIE, 0);
 				// 数据尾部清零
 				_lastSendPos = 0;
