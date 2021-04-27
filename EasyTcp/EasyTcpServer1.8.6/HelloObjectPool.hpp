@@ -51,7 +51,7 @@ public:
 	void freeObjMemory(void* pMem)
 	{
 		NodeHeader* pBlock = (NodeHeader*)((char*)pMem - sizeof(NodeHeader));
-		xPrintf("freeObjMemory: %llx, id=%d\n", pBlock, pBlock->nID);
+		//xPrintf("freeObjMemory: %llx, id=%d\n", pBlock, pBlock->nID);
 		assert(1 == pBlock->nRef);
 
 		if (pBlock->bPool)
