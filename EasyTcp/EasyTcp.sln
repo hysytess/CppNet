@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpServer1.8.4", "EasyT
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpServer1.8.7", "EasyTcpServer1.8.7\EasyTcpServer1.8.7.vcxproj", "{168583FB-1F8C-4CFC-BEE8-0C8E4378DC7A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpServer1.8.8", "EasyTcpServer1.8.8\EasyTcpServer1.8.8.vcxproj", "{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -271,6 +273,14 @@ Global
 		{168583FB-1F8C-4CFC-BEE8-0C8E4378DC7A}.Release|x64.Build.0 = Release|x64
 		{168583FB-1F8C-4CFC-BEE8-0C8E4378DC7A}.Release|x86.ActiveCfg = Release|Win32
 		{168583FB-1F8C-4CFC-BEE8-0C8E4378DC7A}.Release|x86.Build.0 = Release|Win32
+		{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}.Debug|x64.ActiveCfg = Debug|x64
+		{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}.Debug|x64.Build.0 = Debug|x64
+		{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}.Debug|x86.ActiveCfg = Debug|Win32
+		{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}.Debug|x86.Build.0 = Debug|Win32
+		{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}.Release|x64.ActiveCfg = Release|x64
+		{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}.Release|x64.Build.0 = Release|x64
+		{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}.Release|x86.ActiveCfg = Release|Win32
+		{F14AD3C7-9556-4E11-9EAF-87D6C31FA4AA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

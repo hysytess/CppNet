@@ -2,6 +2,8 @@
 #define _CLIENT_SOCKET_HPP_
 
 #define CLIENT_HEART_DEAD_TIME 60000 //5000 ms
+// 超时发送时间
+#define CLIENT_HEART_SEND_TIME 200 // ms
 
 //客户端数据类型
 class ClientSocket
@@ -17,6 +19,7 @@ public:
 		_lastSendPos = 0;
 
 		resetDTHeart();
+		resetDTSend();
 	}
 
 	SOCKET sockfd()
@@ -36,6 +39,24 @@ public:
 	void setLastPos(int pos)
 	{
 		_lastPos = pos;
+	}
+
+	int SendDataReal(netmsg_DataHeader* header)
+	{
+		SendData(header);
+		SendDataReal();
+	}
+
+	int SendDataReal()
+	{
+		int ret = SOCKET_ERROR;
+		if (_lastSendPos > 0 && SOCKET_ERROR != _sockfd)
+		{
+			ret = send(_sockfd, _szSendBuf, _lastSendPos, 0);
+			_lastSendPos = 0;
+			resetDTSend();
+		}
+		return ret;
 	}
 
 	//发送数据
@@ -63,6 +84,7 @@ public:
 				ret = send(_sockfd, _szSendBuf, SEND_BUFF_SZIE, 0);
 				//数据尾部位置清零
 				_lastSendPos = 0;
+				resetDTSend();
 				//发送错误
 				if (SOCKET_ERROR == ret)
 				{
@@ -86,13 +108,31 @@ public:
 		_dtHeart = 0;
 	}
 
-	//心跳检测
+	void resetDTSend()
+	{
+		_dtSend = 0;
+	}
+
+	// 心跳检测
 	bool checkHeart(time_t dt)
 	{
 		_dtHeart += dt;
 		if (_dtHeart >= CLIENT_HEART_DEAD_TIME)
 		{
-			printf("checkHeart dead:s=%d,time=%d\n", _sockfd, _dtHeart);
+			//printf("checkHeart dead:s=%d,time=%d\n", _sockfd, _dtHeart);
+			return true;
+		}
+		return false;
+	}
+	// 超时发送
+	bool checkSend(time_t dt)
+	{
+		_dtSend += dt;
+		if (_dtSend>=CLIENT_HEART_SEND_TIME)
+		{
+			// 立即发送在发送缓冲区中的数据
+			// 重置超时计数 _dtSend
+			//printf("Send timeout.\n");
 			return true;
 		}
 		return false;
@@ -111,6 +151,8 @@ private:
 	int _lastSendPos;
 	//心跳死亡计时
 	time_t _dtHeart;
+	// 发送超时时间
+	time_t _dtSend;
 };
 
 #endif // !_CLIENT_SOCKET_HPP_

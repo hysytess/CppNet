@@ -90,7 +90,7 @@ void sendThread(int id)
 				sendcnt++;
 			}
 		}
-		//std::chrono::milliseconds t(10);
+		//std::chrono::milliseconds t(100);
 		//std::this_thread::sleep_for(t);
 	}
 
