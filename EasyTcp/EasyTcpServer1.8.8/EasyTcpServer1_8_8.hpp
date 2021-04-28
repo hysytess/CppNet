@@ -153,14 +153,13 @@ public:
 			}
 		}
 		pMinServer->addClient(pClient);
-		OnNetJoin(pClient);
 	}
 
 	void Start(int nCellServer)
 	{
 		for (int n = 0; n < nCellServer; n++)
 		{
-			auto ser = new CellServer(_sock);
+			auto ser = new CellServer(n+1);
 			_cellServers.push_back(ser);
 			// 注册网络事件接受对象
 			ser->setEventObj(this);
@@ -171,15 +170,24 @@ public:
 
 	void Close()
 	{
+		printf("Server1.8.8 closed.code:1\n");
 		if (_sock != INVALID_SOCKET)
 		{
+			for (auto s : _cellServers)
+			{
+				delete s;
+			}
+			_cellServers.clear();
 #ifdef _WIN32
 			closesocket(_sock);
 			WSACleanup();
 #else
 			close(_sock);
 #endif
+			_sock = INVALID_SOCKET;
 		}
+		printf("Server1.8.8 closed.code:2\n");
+
 	}
 
 	bool isRun()

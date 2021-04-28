@@ -4,6 +4,7 @@
 #include "PublicLib.hpp"
 #include "CELLTask.hpp"
 #include "ClientSocket.hpp"
+#include "CELLSemaphore.hpp"
 
 #include <vector>
 #include <map>
@@ -13,16 +14,18 @@ class CellServer
 {
 
 public:
-	CellServer(SOCKET sock = INVALID_SOCKET)
+	CellServer(int id)
 	{
-		_sock = sock;
+		_id = id;
 		_pNetEvent = nullptr;
+		_taskServer._serverId = id;
 	}
 	~CellServer()
 	{
+		printf("CellServer%d.~CellServer exit.code:1\n", _id);
 		Close();
-		_sock = INVALID_SOCKET;
-		delete _pThread;
+		printf("CellServer%d.~CellServer exit.code:2\n", _id);
+
 	}
 
 	void setEventObj(INetEvent* event)
@@ -32,40 +35,20 @@ public:
 
 	void Close()
 	{
-		if (_sock != INVALID_SOCKET)
+		printf("CellServer%d closed.code:1\n", _id);
+		if (_isRun)
 		{
-#ifdef _WIN32
-			for (auto iter : _clients)
-			{
-				closesocket(iter.second->sockfd());
-				delete iter.second;
-			}
-			closesocket(_sock);
-#else
-			for (auto iter : _clients)
-			{
-				closesocket(iter.second->sockfd());
-				delete iter.second;
-			}
-			close(_sock);
-#endif
-			_clients.clear();
+			_taskServer.Close();
+			_isRun = false;
+			_sem.wait();
 		}
+		printf("CellServer%d closed.code:2\n", _id);	
 	}
 
-	bool isRun()
-	{
-		return _sock != INVALID_SOCKET;
-	}
-
-	fd_set _fdRead_bak;
-	// 有客户端加入 或者退出 集合 fd_set(fdRead) 改变
-	bool _clients_change;
-	SOCKET _maxSock;
 	void OnRun()
 	{
 		_clients_change = true;
-		while (isRun())
+		while (_isRun)
 		{
 			if (!_clientsBuff.empty())
 			{
@@ -73,6 +56,9 @@ public:
 				for (auto pClient : _clientsBuff)
 				{
 					_clients[pClient->sockfd()] = pClient;
+					pClient->serverId = _id;
+					if (_pNetEvent)
+						_pNetEvent->OnNetJoin(pClient);
 				}
 				_clientsBuff.clear();
 				_clients_change = true;
@@ -123,10 +109,11 @@ public:
 			ReadData(fdRead);
 			CheckTime();
 		}
+		Clearclients();
+		_sem.wakeup();
 	};
 	
 	// 心跳检测
-	time_t _old_time = CELLTime::getNowInMillisec();
 	void CheckTime()
 	{
 		auto nowTime = CELLTime::getNowInMillisec();
@@ -139,11 +126,6 @@ public:
 			{
 				if (_pNetEvent)
 					_pNetEvent->OnLeave(iter->second);
-#ifdef _WIN32
-				closesocket(iter->first);
-#else
-				close(iter->first);
-#endif
 				_clients_change = true;
 				delete iter->second;
 				auto iterOld = iter++;
@@ -171,7 +153,6 @@ public:
 						_pNetEvent->OnLeave(iter->second);
 					_clients_change = true;
 					delete iter->second;
-					closesocket(iter->first);
 					_clients.erase(iter);
 				}
 			}
@@ -264,24 +245,54 @@ public:
 
 	void CellsrvStart()
 	{
-		_pThread = new std::thread(std::mem_fun(&CellServer::OnRun), this);
-		_taskServer.Start();
+		if (!_isRun)
+		{
+			_isRun = true;
+			std::thread t(std::mem_fun(&CellServer::OnRun), this);
+			t.detach();
+			_taskServer.Start();
+		}
+		
 	}
 
 	size_t getClientCount()
 	{
 		return _clients.size() + _clientsBuff.size();
 	}
+
 	private:
-		SOCKET _sock;
+		void Clearclients()
+		{
+			for (auto iter : _clients)
+			{
+				delete iter.second;
+			}
+			_clients.clear();
+
+			for (auto iter : _clientsBuff)
+			{
+				delete iter;
+			}
+			_clientsBuff.clear();
+		}
+	private:
 		//Client sequen
 		std::map<SOCKET, ClientSocket*>_clients;
 		//Client sequen buff
 		std::vector<ClientSocket*>_clientsBuff;
 		std::mutex _mutex;
-		std::thread* _pThread;
 		INetEvent* _pNetEvent;
 		CellTaskServer _taskServer;
+
+		fd_set _fdRead_bak;
+		SOCKET _maxSock;
+		time_t _old_time = CELLTime::getNowInMillisec();
+		CELLSemaphore _sem;
+		int _id = 0;
+		// 有客户端加入 或者退出 集合 fd_set(fdRead) 改变
+		bool _clients_change = true;
+		bool _isRun = false;
+		
 };
 
 #endif

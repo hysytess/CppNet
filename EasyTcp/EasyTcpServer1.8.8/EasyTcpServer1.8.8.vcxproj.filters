@@ -42,6 +42,9 @@
     <ClInclude Include="MyServer1_8_8.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CELLSemaphore.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EasyTcpServer1_8_8_main.cpp">

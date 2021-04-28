@@ -9,8 +9,13 @@
 class ClientSocket
 {
 public:
+	int id = -1;
+	int serverId = -1;
+public:
 	ClientSocket(SOCKET sockfd = INVALID_SOCKET)
 	{
+		static int n = 1;
+		id = n++;
 		_sockfd = sockfd;
 		memset(_szMsgBuf, 0, RECV_BUFF_SZIE);
 		_lastPos = 0;
@@ -20,6 +25,19 @@ public:
 
 		resetDTHeart();
 		resetDTSend();
+	}
+	~ClientSocket()
+	{
+		printf("s=%d CellClient%d closed.code:1\n",serverId, id);
+		if (INVALID_SOCKET != _sockfd)
+		{
+#ifdef _WIN32
+			closesocket(_sockfd);
+#else
+			close(_sockfd);
+#endif
+			_sockfd = INVALID_SOCKET;
+		}
 	}
 
 	SOCKET sockfd()
@@ -153,6 +171,7 @@ private:
 	time_t _dtHeart;
 	// 发送超时时间
 	time_t _dtSend;
+
 };
 
 #endif // !_CLIENT_SOCKET_HPP_

@@ -6,9 +6,14 @@
 #include <list>
 #include <functional>
 
+#include "CELLSemaphore.hpp"
+
 // 任务类[实现]
 class CellTaskServer
 {
+public:
+	int _serverId = -1;
+private:
 	typedef std::function<void()>CellTask;
 private:
 	// 任务队列
@@ -16,6 +21,8 @@ private:
 	// 任务队列缓冲区
 	std::list<CellTask> _tasksBuff;
 	std::mutex _mutex;
+	bool _isRun = false;
+	CELLSemaphore _sem;
 public:
 	CellTaskServer()
 	{
@@ -32,14 +39,27 @@ public:
 	// 启动服务
 	void Start()
 	{
+		_isRun = true;
 		std::thread t(std::mem_fun(&CellTaskServer::OnRun), this);
 		t.detach();
 	}
-	// 工作函数 从缓冲区取出任务事件放到任务队列中并顺序执行队列中的任务
+
+	void Close()
+	{
+		printf("CELLTask%d closed.code:1\n", _serverId);
+		if (_isRun)
+		{
+			_isRun = false;
+			_sem.wait();
+		}
+		printf("CELLTask%d closed.code:2\n", _serverId);
+	}
+
 protected:
+	// 工作函数 从缓冲区取出任务事件放到任务队列中并顺序执行队列中的任务
 	void OnRun()
 	{
-		while (true)
+		while (_isRun)
 		{
 			if (!_tasksBuff.empty())
 			{
@@ -64,6 +84,8 @@ protected:
 			// 清空任务队列
 			_tasks.clear();
 		}
+		printf("CellServer%d::OnRun() exit.code:%d(0 normal)\n", _serverId,_isRun);
+		_sem.wakeup();
 	}
 };
 #endif

@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CELLSemaphore.hpp" />
     <ClInclude Include="CellServer.hpp" />
     <ClInclude Include="CELLTask.hpp" />
     <ClInclude Include="CELLTimestamp.hpp" />
