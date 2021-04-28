@@ -5,7 +5,7 @@
 #include <atomic>
 #include <chrono>
 
-std::atomic_int client_cnt = 1;
+std::atomic_int client_cnt = 0;
 std::atomic_int sendcnt = 0;
 std::atomic_int readyCount = 0;
 
@@ -35,7 +35,7 @@ void recvThread(int start, int end)
 	{
 		for (int i = start; i < end; i++)
 		{
-			client[i]->OnRun();
+			if (client[i]->OnRun());
 		}
 		// printf("空闲时间处理其他任务...\n");
 	}
@@ -73,7 +73,7 @@ void sendThread(int id)
 	t2.detach();
 
 	const int packageCnt = 5;
-	Login login[packageCnt];
+	netmsg_Login login[packageCnt];
 	for (int n = 0; n < packageCnt; n++)
 	{
 		strcpy(login[n].userName, "lyd");

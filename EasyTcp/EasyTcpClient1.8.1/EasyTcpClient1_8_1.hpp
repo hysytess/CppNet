@@ -159,9 +159,9 @@ public:
 		}
 		memcpy(_szMsgBuf + _lastPos, _szRecv, nLen);
 		_lastPos += nLen;
-		while (_lastPos >= sizeof(DataHeader))
+		while (_lastPos >= sizeof(netmsg_DataHeader))
 		{
-			DataHeader *header = (DataHeader*)_szMsgBuf;
+			netmsg_DataHeader *header = (netmsg_DataHeader*)_szMsgBuf;
 			if (_lastPos >= header->dataLength)
 			{
 				int nSize = _lastPos - header->dataLength;
@@ -176,31 +176,31 @@ public:
 		}
 		return 0;
 	}
-	virtual void OnNetMsg(DataHeader* header)
+	virtual void OnNetMsg(netmsg_DataHeader* header)
 	{
 		switch (header->cmd)
 		{
 		case CMD_LOGIN_RESULT:
 		{
-			LoginResult* login = (LoginResult*)header;
+			netmsg_LoginR* login = (netmsg_LoginR*)header;
 			//printf("<socket=%d>收到服务器消息：CMD_LOGIN_RESULT,数据长度：%d\n", _sock, header->dataLength);
 		}
 		break;
 		case CMD_LOGOUT_RESULT:
 		{
-			LogoutResult* logout = (LogoutResult*)header;
+			netmsg_LogoutR* logout = (netmsg_LogoutR*)header;
 			//printf("<socket=%d>收到服务器消息：CMD_LOGOUT_RESULT,数据长度：%d\n", _sock, header->dataLength);
 		}
 		break;
 		case CMD_NEW_USER_JOIN:
 		{
-			NewUserJoin* userJoin = (NewUserJoin*)header;
+			netmsg_NewUserJoin* userJoin = (netmsg_NewUserJoin*)header;
 			//printf("<socket=%d>收到服务器消息：CMD_NEW_USER_JOIN,数据长度：%d\n", _sock, header->dataLength);
 		}
 		break;
 		case CMD_ERROR:
 		{
-			NewUserJoin* userJoin = (NewUserJoin*)header;
+			netmsg_NewUserJoin* userJoin = (netmsg_NewUserJoin*)header;
 			//printf("<socket=%d>收到服务器消息：CMD_ERROR,数据长度：%d\n", _sock, header->dataLength);
 		}
 		break;
@@ -210,7 +210,7 @@ public:
 		}
 		}
 	}
-	int SendData(DataHeader* header, int nLen)
+	int SendData(netmsg_DataHeader* header, int nLen)
 	{
 		if (isRun() && header)
 		{
