@@ -1,4 +1,6 @@
 // 添加定时发送机制
+// 引入C++11 特性 std::condition_variable lamda
+// 使用自定义信号量
 
 #include "MyServer1_8_8.hpp"
 
