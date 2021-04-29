@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 		}
 	}
 	
-	std::cout << "exit" << std::endl;
+	std::cout << "Exit." << std::endl;
 
 	return 0;
 }

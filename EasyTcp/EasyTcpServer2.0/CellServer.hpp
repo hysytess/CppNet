@@ -69,7 +69,7 @@ public:
 
 			fd_set fdRead;
 			fd_set fdWrite;
-			fd_set fdExp;
+			//fd_set fdExp;
 
 			if (_clients_change)
 			{
@@ -91,11 +91,11 @@ public:
 				memcpy(&fdRead, &_fdRead_bak, sizeof(fd_set));
 			}
 			memcpy(&fdWrite, &_fdRead_bak, sizeof(fd_set));
-			memcpy(&fdExp, &_fdRead_bak, sizeof(fd_set));
+			//memcpy(&fdExp, &_fdRead_bak, sizeof(fd_set));
 
 			timeval tv{ 0,1 };
 			// 若要在CellServer中处理其他业务则用非阻塞模式
-			int ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, &fdExp, &tv);
+			int ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, nullptr, &tv);
 			if (ret < 0)
 			{
 				printf("CellServer%d.OnRun.Select error.\n",_id);
@@ -108,6 +108,8 @@ public:
 			//}
 
 			ReadData(fdRead);
+			WriteData(fdWrite);
+			//WriteData(fdExp);
 			CheckTime();
 		}
 		printf("CELLServer%d.OnRun exit\n", _id);
@@ -134,9 +136,53 @@ public:
 				continue;
 			}
 			//超时发送
-			iter->second->checkSend(dt);
+			//iter->second->checkSend(dt);
 			iter++;
 		}
+	}
+
+	void onClientLeave(ClientSocket* pClient)
+	{
+		if (_pNetEvent)
+			_pNetEvent->OnLeave(pClient);
+		_clients_change = true;
+		delete pClient;
+	}
+
+	void WriteData(fd_set& fdWrite)
+	{
+#ifdef _WIN32
+
+		for (int n = 0; n < fdWrite.fd_count; n++)
+		{
+			auto iter = _clients.find(fdWrite.fd_array[n]);
+			if (iter != _clients.end())
+			{
+				if (-1 == iter->second->SendDataReal())
+				{
+					onClientLeave(iter->second);
+					_clients.erase(iter);
+				}
+			}
+		}
+
+#else
+		for (auto iter = _clients.begin(); iter != _clients.end(); )
+		{
+			if (FD_ISSET(iter->second->sockfd(), &fdWrite))
+			{
+				if (-1 == iter->second->SendDataReal())
+				{
+					onClientLeave(iter->second);
+					auto iterOld = iter;
+					iter++;
+					_clients.erase(iterOld);
+					continue;
+				}
+			}
+			iter++;
+		}
+#endif
 	}
 
 	void ReadData(fd_set& fdRead)
@@ -150,16 +196,9 @@ public:
 			{
 				if (-1 == RecvData(iter->second))
 				{
-					if (_pNetEvent)
-						_pNetEvent->OnLeave(iter->second);
-					_clients_change = true;
-					delete iter->second;
+					onClientLeave(iter->second);
 					_clients.erase(iter);
 				}
-			}
-			else
-			{
-				std::cerr << "Oh,shit! what's error?" << std::endl;
 			}
 		}
 
@@ -170,10 +209,7 @@ public:
 			{
 				if (-1 == RecvData(iter->second))
 				{
-					if (_pNetEvent)
-						_pNetEvent->OnNetLeave(iter->second);
-					_clients_change = true;
-					delete iter->second;
+					onClientLeave(iter->second);
 					auto iterOld = iter;
 					iter++;
 					_clients.erase(iterOld);

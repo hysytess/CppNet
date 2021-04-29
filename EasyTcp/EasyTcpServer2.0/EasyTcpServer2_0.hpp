@@ -173,7 +173,7 @@ public:
 
 	void Close()
 	{
-		printf("Server1.9 closed.code:1\n");
+		printf("Server2.0 closed.code:1\n");
 		_cellThread.Close();
 		if (_sock != INVALID_SOCKET)
 		{
@@ -190,7 +190,7 @@ public:
 #endif
 			_sock = INVALID_SOCKET;
 		}
-		printf("Server1.9 closed.code:2\n");
+		printf("Server2.0 closed.code:2\n");
 
 	}
 
