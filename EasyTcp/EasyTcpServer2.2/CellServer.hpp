@@ -38,7 +38,7 @@ public:
 		CellLog::Info("CellServer%d closed.code:1\n", _id);
 		_taskServer.Close();
 		_cellThread.Close();
-		CellLog::Info("CellServer%d closed.code:2\n", _id);	
+		CellLog::Info("CellServer%d closed.code:2\n", _id);
 	}
 
 	void OnRun(CellThread* pThread)
@@ -98,7 +98,7 @@ public:
 			int ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, nullptr, &tv);
 			if (ret < 0)
 			{
-				CellLog::Info("CellServer%d.OnRun.Select error...exit.\n",_id);
+				CellLog::Info("CellServer%d.OnRun.Select error...exit.\n", _id);
 				pThread->Exit();
 				break;
 			}
@@ -114,7 +114,7 @@ public:
 		}
 		CellLog::Info("CELLServer%d.OnRun exit\n", _id);
 	};
-	
+
 	// 心跳检测
 	void CheckTime()
 	{
@@ -232,7 +232,7 @@ public:
 		}
 		// 触发接收事件 【pClient】 对象
 		_pNetEvent->OnNetRecv(pClient);
-		
+
 		while (pClient->hasMsg())
 		{
 			// 处理接收到完整的数据
@@ -259,15 +259,15 @@ public:
 
 	void CellsrvStart()
 	{
-		
+
 		_taskServer.Start();
 		_cellThread.Start(
 			// onCreate
 			nullptr,
 			// onRun
-			[this](CellThread* pThread) {OnRun(pThread);},
+			[this](CellThread* pThread) {OnRun(pThread); },
 			// onClose
-			[this](CellThread* pThread) {Clearclients();}
+			[this](CellThread* pThread) {Clearclients(); }
 		);
 	}
 
@@ -285,37 +285,37 @@ public:
 	}
 
 private:
-		void Clearclients()
+	void Clearclients()
+	{
+		for (auto iter : _clients)
 		{
-			for (auto iter : _clients)
-			{
-				delete iter.second;
-			}
-			_clients.clear();
-
-			for (auto iter : _clientsBuff)
-			{
-				delete iter;
-			}
-			_clientsBuff.clear();
+			delete iter.second;
 		}
+		_clients.clear();
 
-	private:
-		//Client sequen
-		std::map<SOCKET, ClientSocket*>_clients;
-		//Client sequen buff
-		std::vector<ClientSocket*>_clientsBuff;
-		std::mutex _mutex;
-		INetEvent* _pNetEvent;
-		CellTaskServer _taskServer;
+		for (auto iter : _clientsBuff)
+		{
+			delete iter;
+		}
+		_clientsBuff.clear();
+	}
 
-		fd_set _fdRead_bak;
-		SOCKET _maxSock;
-		time_t _old_time = CELLTime::getNowInMillisec();
-		CellThread _cellThread;
-		int _id = -1;
-		// 有客户端加入 或者退出 集合 fd_set(fdRead) 改变
-		bool _clients_change = true;
+private:
+	//Client sequen
+	std::map<SOCKET, ClientSocket*>_clients;
+	//Client sequen buff
+	std::vector<ClientSocket*>_clientsBuff;
+	std::mutex _mutex;
+	INetEvent* _pNetEvent;
+	CellTaskServer _taskServer;
+
+	fd_set _fdRead_bak;
+	SOCKET _maxSock;
+	time_t _old_time = CELLTime::getNowInMillisec();
+	CellThread _cellThread;
+	int _id = -1;
+	// 有客户端加入 或者退出 集合 fd_set(fdRead) 改变
+	bool _clients_change = true;
 };
 
 #endif

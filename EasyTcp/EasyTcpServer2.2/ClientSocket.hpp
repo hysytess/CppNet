@@ -68,6 +68,11 @@ public:
 
 	}
 
+	bool needWrite()
+	{
+		return _sendBuff.needWrite();
+	}
+
 	int SendDataReal()
 	{
 		resetDTSend();
