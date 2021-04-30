@@ -43,6 +43,15 @@ public:
 	SOCKET InitSocket()
 	{
 		CellNetWork::Init();
+
+#ifdef _WIN32	
+#else
+		int opt = 1;
+		unsigned int len = sizeof(opt);
+		setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR, &opt, len);
+		setsockopt(_sock, SOL_SOCKET, SO_KEEPALIVE, &opt, len);
+#endif
+
 		if (INVALID_SOCKET != _sock)
 		{
 			CellLog::Info("<socket=%d>old connection was disconneted.\n", (int)_sock);
@@ -155,7 +164,7 @@ public:
 	{
 		for (int n = 0; n < nCellServer; n++)
 		{
-			auto ser = new CellServer(n+1);
+			auto ser = new CellServer(n + 1);
 			_cellServers.push_back(ser);
 			// 注册网络事件接受对象
 			ser->setEventObj(this);
@@ -163,7 +172,7 @@ public:
 			ser->CellsrvStart();
 		}
 		_cellThread.Start(nullptr,
-			[this](CellThread* pThread) {OnRun(pThread);});
+			[this](CellThread* pThread) {OnRun(pThread); });
 	}
 
 	void Close()
@@ -209,47 +218,47 @@ public:
 	}
 
 private:
-		void OnRun(CellThread* pThread)
+	void OnRun(CellThread* pThread)
+	{
+		while (pThread->isRun())
 		{
-			while (pThread->isRun())
+			Time4msg();
+
+			fd_set fdRead;
+
+			FD_ZERO(&fdRead);
+
+			FD_SET(_sock, &fdRead);
+
+			timeval tv{ 0,1 };
+			int ret = (int)select(_sock + 1, &fdRead, nullptr, nullptr, &tv);
+
+			if (ret < 0)
 			{
-				Time4msg();
+				CellLog::Info("EasyTcpServer.accept.select exit.\n");
+				pThread->Exit();
+				break;
+			}
 
-				fd_set fdRead;
-
-				FD_ZERO(&fdRead);
-
-				FD_SET(_sock, &fdRead);
-
-				timeval tv{ 0,1 };
-				int ret = (int)select(_sock + 1, &fdRead, nullptr, nullptr, &tv);
-
-				if (ret < 0)
-				{
-					CellLog::Info("EasyTcpServer.accept.select exit.\n");
-					pThread->Exit();
-					break;
-				}
-
-				if (FD_ISSET(_sock, &fdRead))
-				{
-					FD_CLR(_sock, &fdRead);
-					Accept();
-				}
+			if (FD_ISSET(_sock, &fdRead))
+			{
+				FD_CLR(_sock, &fdRead);
+				Accept();
 			}
 		}
+	}
 
-		void Time4msg()
+	void Time4msg()
+	{
+		auto t1 = _tTime.getElapsedSecond();
+		if (t1 >= 1.0)
 		{
-			auto t1 = _tTime.getElapsedSecond();
-			if (t1 >= 1.0)
-			{
-				CellLog::Info("thread<%d>,time<%lf>,listen<%d>,client<%d>,receive<%d>,msg<%d>\n", (int)_cellServers.size(), t1, (int)_sock, (int)_clientCount, (int)(_recvCount / t1), (int)(_msgCount / t1));
-				_recvCount = 0;
-				_msgCount = 0;
-				_tTime.update();
-			}
+			CellLog::Info("thread<%d>,time<%lf>,listen<%d>,client<%d>,receive<%d>,msg<%d>\n", (int)_cellServers.size(), t1, (int)_sock, (int)_clientCount, (int)(_recvCount / t1), (int)(_msgCount / t1));
+			_recvCount = 0;
+			_msgCount = 0;
+			_tTime.update();
 		}
+	}
 };
 
 #endif

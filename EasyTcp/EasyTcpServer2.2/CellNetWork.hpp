@@ -7,7 +7,7 @@ class CellNetWork
 {
 private:
 	CellNetWork()
-	{ 
+	{
 #ifdef _WIN32
 		WORD ver = MAKEWORD(2, 2);
 		WSADATA dat;
@@ -18,12 +18,12 @@ private:
 		// 屏蔽系统终止信号
 
 		if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-			return (1);
+			return;
 #endif
 
 	}
 	~CellNetWork()
-	{ 
+	{
 #ifdef _WIN32
 		WSACleanup();
 #endif
