@@ -8,7 +8,7 @@
 
 #include "CellThread.hpp"
 
-// 任务类[实现]
+// 任务类
 class CellTaskServer
 {
 public:
@@ -23,12 +23,6 @@ private:
 	std::mutex _mutex;
 	CellThread _cellThread;
 public:
-	CellTaskServer()
-	{
-	}
-	~CellTaskServer()
-	{
-	}
 	//添加任务到缓冲区队列
 	void addTask(CellTask task)
 	{
@@ -45,9 +39,9 @@ public:
 
 	void Close()
 	{
-		printf("CELLTask%d closed.code:1\n", _serverId);
+		//CellLog::Info("CELLTask%d closed.code:1\n", _serverId);
 		_cellThread.Close();
-		printf("CELLTask%d closed.code:2\n", _serverId);
+		//CellLog::Info("CELLTask%d closed.code:2\n", _serverId);
 	}
 
 protected:
@@ -79,7 +73,12 @@ protected:
 			// 清空任务队列
 			_tasks.clear();
 		}
-		printf("CellServer%d::OnRun() exit.code:%d(0 normal)\n", _serverId,_cellThread.isRun());
+		// 退出前处理缓冲队列中的任务
+		for (auto pTask : _tasksBuff)
+		{
+			pTask();
+		}
+		//CellLog::Info("CellServer%d::OnRun() exit.code:%d(0 normal)\n", _serverId,_cellThread.isRun());
 	}
 };
 #endif

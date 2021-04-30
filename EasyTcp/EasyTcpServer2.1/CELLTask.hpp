@@ -65,7 +65,7 @@ protected:
 				}
 				_tasksBuff.clear();
 			}
-			if (_tasksBuff.empty())
+			if (_tasks.empty())
 			{
 				std::chrono::milliseconds t(1);
 				std::this_thread::sleep_for(t);
