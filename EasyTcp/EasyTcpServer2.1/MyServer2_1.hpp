@@ -1,7 +1,7 @@
 #ifndef _MYSERVER_HPP_
 #define _MYSERVER_HPP_
 
-#include "EasyTcpServer2_0.hpp"
+#include "EasyTcpServer2_1.hpp"
 
 //应用层
 class MyServer :public EasyTcpServer
@@ -37,7 +37,7 @@ public:
 			if (SOCKET_ERROR == pClient->SendData(&ret))
 			{
 				// 消息发送缓冲区满了,消息没发出去
-				//printf("<Socket=%d> Send full.\n", pClient->sockfd());
+				printf("<Socket=%d> Send full buff.\n", pClient->sockfd());
 			}
 			// 不安全写法 将业务层暴露给用户(应用层)
 			//异步发送
