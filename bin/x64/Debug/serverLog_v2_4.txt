@@ -1,43 +1,17 @@
-[2021-5-1 18:36:11]<socket=204> was created...
-[2021-5-1 18:36:11]Port<4567> bind sucess...
-[2021-5-1 18:36:11]<socket=204> listen, wait for client connect...
-[2021-5-1 18:36:12]thread<4>,time<1.012457>,listen<204>,client<0>,receive<0>,msg<0>
-[2021-5-1 18:36:13]thread<4>,time<1.000243>,listen<204>,client<0>,receive<0>,msg<0>
-[2021-5-1 18:36:14]thread<4>,time<1.004456>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:15]thread<4>,time<1.004237>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:16]thread<4>,time<1.004253>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:17]thread<4>,time<1.004293>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:18]thread<4>,time<1.004313>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:19]thread<4>,time<1.004129>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:20]thread<4>,time<1.004273>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:21]thread<4>,time<1.004281>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:22]thread<4>,time<1.004315>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:23]thread<4>,time<1.004196>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:24]thread<4>,time<1.004240>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:25]thread<4>,time<1.004253>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:26]thread<4>,time<1.004235>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:27]thread<4>,time<1.004286>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:28]thread<4>,time<1.004286>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:29]thread<4>,time<1.004282>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:30]thread<4>,time<1.004276>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:31]thread<4>,time<1.004287>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:32]thread<4>,time<1.004267>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:33]thread<4>,time<1.004298>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:34]thread<4>,time<1.001542>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:35]thread<4>,time<1.004241>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:36]thread<4>,time<1.004283>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:37]thread<4>,time<1.004236>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:38]thread<4>,time<1.004291>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:39]thread<4>,time<1.004239>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:40]thread<4>,time<1.004194>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:41]thread<4>,time<1.004181>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:42]thread<4>,time<1.004223>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:43]thread<4>,time<1.004051>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:44]thread<4>,time<1.004197>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:45]thread<4>,time<1.004164>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:46]thread<4>,time<1.004230>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:47]thread<4>,time<1.004242>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:48]thread<4>,time<1.004273>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:49]thread<4>,time<1.004192>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:50]thread<4>,time<1.004178>,listen<204>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:36:51]thread<4>,time<1.009530>,listen<204>,client<0>,receive<0>,msg<0>
+[2021-5-1 19:20:46]<socket=200> was created...
+[2021-5-1 19:20:46]Port<4567> bind sucess...
+[2021-5-1 19:20:46]<socket=200> listen, wait for client connect...
+[2021-5-1 19:20:47]thread<4>,time<1.012091>,listen<200>,client<0>,receive<0>,msg<0>
+[2021-5-1 19:20:48]thread<4>,time<1.014587>,listen<200>,client<0>,receive<0>,msg<0>
+[2021-5-1 19:20:50]thread<4>,time<1.009565>,listen<200>,client<0>,receive<0>,msg<0>
+[2021-5-1 19:20:51]thread<4>,time<1.009411>,listen<200>,client<1>,receive<21>,msg<22>
+[2021-5-1 19:20:52]thread<4>,time<1.004309>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:20:53]thread<4>,time<1.004253>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:20:54]thread<4>,time<1.004254>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:20:55]thread<4>,time<1.004306>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:20:56]thread<4>,time<1.004272>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:20:57]thread<4>,time<1.004275>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:20:58]thread<4>,time<1.004275>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:20:59]thread<4>,time<1.004233>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:21:0]thread<4>,time<1.004264>,listen<200>,client<1>,receive<66>,msg<66>
+[2021-5-1 19:21:1]thread<4>,time<1.010148>,listen<200>,client<0>,receive<19>,msg<19>

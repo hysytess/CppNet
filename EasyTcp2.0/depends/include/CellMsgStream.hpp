@@ -3,6 +3,8 @@
 
 #include "../depends/include/CellStream.hpp"
 
+#include <string>
+
 //Receive message byte stream
 class CellRecvStream:public CellStream
 {
@@ -47,6 +49,20 @@ public:
 	{
 		Write<uint16_t>(cmd);
 	}
+
+	bool WriteString(const char* str,int len)
+	{ 
+		return WriteArray(str, len);
+	}
+	bool WriteString(const char* str)
+	{ 
+		return WriteArray(str, strlen(str));
+	}
+	bool WriteString(std::string& str)
+	{ 
+		return WriteArray(str.c_str(), str.length());
+	}
+
 
 	// 直接写到流缓冲区队列头
 	void finsh()

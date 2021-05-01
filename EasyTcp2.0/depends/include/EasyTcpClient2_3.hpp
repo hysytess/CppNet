@@ -141,32 +141,40 @@ public:
 
 	int RecvData(SOCKET csock)
 	{
-		// 收数据
-		int nLen = _pClient->RecvData();
-		// 判断接收情况
-		if (nLen > 0)
+		if (isRun())
 		{
-			while (_pClient->hasMsg())
+			// 收数据
+			int nLen = _pClient->RecvData();
+			// 判断接收情况
+			if (nLen > 0)
 			{
-				// 处理接收到完整的数据
-				OnNetMsg(_pClient->front_msg());
-				// 移除在缓冲区队列头 已处理的数据
-				_pClient->pop_front_msg();
+				while (_pClient->hasMsg())
+				{
+					// 处理接收到完整的数据
+					OnNetMsg(_pClient->front_msg());
+					// 移除在缓冲区队列头 已处理的数据
+					_pClient->pop_front_msg();
+				}
 			}
+			return nLen;
 		}
-		return nLen;
+		return 0;
 	}
 
 	virtual void OnNetMsg(netmsg_DataHeader* header) = 0;
 	
 	int SendData(netmsg_DataHeader* header)
 	{
-		return _pClient->SendData(header);
+		if (isRun())
+			return _pClient->SendData(header);
+		else return 0;
 	}
 
 	int SendData(const char* pData, int len)
 	{
-		return _pClient->SendData(pData, len);
+		if (isRun())
+			return _pClient->SendData(pData, len);
+		return 0;
 	}
 
 protected:

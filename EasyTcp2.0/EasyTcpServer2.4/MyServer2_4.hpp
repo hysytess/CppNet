@@ -81,14 +81,14 @@ public:
 
 			char str[]{ "server." };
 
-			char str0[5] = "abc";
+			char str0[5] = "zzz";
 			int pos0[]{ 5,6,7 };
 			int pos[2]{ 1,2 };
 			byteStream1.WriteArray(str, strlen(str));
 			byteStream1.WriteArray(pos, 2);
 
 			byteStream1.WriteArray(str0, strlen(str0));
-			byteStream1.WriteArray(pos0, 3);
+			byteStream1.WriteString(str0);
 			byteStream1.finsh();
 			pClient->SendData(byteStream1.data(), byteStream1.length());
 			//CellLog::Info("收到客户端<socket=%d>请求：CMD_LOGOUT，数据长度：%d, userName=%s", (int)cSock, login->dataLength, login->userName);

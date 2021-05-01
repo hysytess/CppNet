@@ -1,6 +1,9 @@
 #ifndef _CELL_STREAM_HPP_
 #define _CELL_STREAM_HPP_
 
+#include "CellLog.hpp"
+#include <cstdint>
+
 //Byte Stream
 class CellStream
 {
@@ -75,6 +78,9 @@ public:
 				pop(nLen);
 			return true;
 		}
+		//方法1 断言assert()
+		//2 CellLog
+		//CellLog::Info("error,CellStream::Read failed.\n");
 		return false;
 	}
 
@@ -87,25 +93,27 @@ public:
 	template<typename T>
 	uint32_t ReadArray(T* pArr, uint32_t len)
 	{
-		// 读取数组元素个数
 		uint32_t len1 = 0;
-		Read(len1,false);
-		// 判断传进来的缓存数组能否放得下
+		//读取数组元素个数,但不偏移读取位置
+		Read(len1, false);
+		//判断缓存数组能否放得下
 		if (len1 < len)
 		{
 			//计算数组的字节长度
 			auto nLen = len1 * sizeof(T);
-			//判断能否读出
+			//判断能不能读出
 			if (canRead(nLen + sizeof(uint32_t)))
 			{
 				//计算已读位置+数组长度所占有空间
 				pop(sizeof(uint32_t));
-				
+				//将要读取的数据 拷贝出来
 				memcpy(pArr, _pBuff + _nReadPos, nLen);
+				//计算已读数据位置
 				pop(nLen);
 				return len1;
 			}
 		}
+		//CellLog::Info("error, CELLStream::ReadArray failed.\n");
 		return 0;
 	}
 
@@ -159,6 +167,7 @@ public:
 			push(nLen);
 			return true;
 		}
+		//CellLog::Info("error,CellStream::Write failed.\n");
 		return false;
 	}
 	template<typename T>
@@ -174,6 +183,7 @@ public:
 			push(nLen);
 			return true;
 		}
+		//CellLog::Info("error,CellStream::WriteArray failed.\n");
 		return false;
 	}
 

@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 	byteStream.WriteArray(str, strlen(str));
 	byteStream.WriteArray(pos, 2);
 
-	byteStream.WriteArray(str0, strlen(str0));
+	byteStream.WriteString(str0);
 	byteStream.WriteArray(pos0, 3);
 	byteStream.finsh();
 
@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
 	while(client.isRun())
 	{
 		client.OnRun();
+		client.SendData(byteStream.data(), byteStream.length());
 		CellThread::Sleep(10);
 	}
 

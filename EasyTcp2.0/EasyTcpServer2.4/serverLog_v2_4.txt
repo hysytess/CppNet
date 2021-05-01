@@ -1,12 +1,8 @@
-[2021-5-1 18:32:41]<socket=156> was created...
-[2021-5-1 18:32:41]Port<4567> bind sucess...
-[2021-5-1 18:32:41]<socket=156> listen, wait for client connect...
-[2021-5-1 18:32:42]thread<4>,time<1.013704>,listen<156>,client<0>,receive<0>,msg<0>
-[2021-5-1 18:32:43]thread<4>,time<1.013054>,listen<156>,client<0>,receive<0>,msg<0>
-[2021-5-1 18:32:44]thread<4>,time<1.013372>,listen<156>,client<0>,receive<0>,msg<0>
-[2021-5-1 18:32:45]thread<4>,time<1.000527>,listen<156>,client<0>,receive<0>,msg<0>
-[2021-5-1 18:32:46]thread<4>,time<1.013445>,listen<156>,client<0>,receive<0>,msg<0>
-[2021-5-1 18:33:8]thread<4>,time<20.985414>,listen<156>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:33:9]thread<4>,time<1.003951>,listen<156>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:33:10]thread<4>,time<1.004237>,listen<156>,client<1>,receive<0>,msg<0>
-[2021-5-1 18:33:11]thread<4>,time<1.004276>,listen<156>,client<1>,receive<0>,msg<0>
+[2021-5-1 18:52:25]<socket=196> was created...
+[2021-5-1 18:52:25]Port<4567> bind sucess...
+[2021-5-1 18:52:25]<socket=196> listen, wait for client connect...
+[2021-5-1 18:52:26]thread<4>,time<1.003549>,listen<196>,client<0>,receive<0>,msg<0>
+[2021-5-1 18:52:27]thread<4>,time<1.015115>,listen<196>,client<0>,receive<0>,msg<0>
+[2021-5-1 18:52:28]thread<4>,time<1.006467>,listen<196>,client<0>,receive<0>,msg<0>
+[2021-5-1 18:52:29]thread<4>,time<1.005062>,listen<196>,client<0>,receive<0>,msg<0>
+[2021-5-1 18:52:30]thread<4>,time<1.014784>,listen<196>,client<0>,receive<0>,msg<0>
