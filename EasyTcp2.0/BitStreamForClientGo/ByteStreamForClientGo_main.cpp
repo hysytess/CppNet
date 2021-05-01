@@ -1,6 +1,6 @@
 #include "MyClient.hpp"
 
-int main(int argc, char* argv[])
+void test()
 {
 	// 字节流是有序的 [写入读取位置要对应]
 	// 写入 -3>c -2>b -1>a 缓冲区队列[cba->] 出队顺序:a[1] b[2] c[3]
@@ -14,8 +14,8 @@ int main(int argc, char* argv[])
 	byteStream.WriteFloat(14.0);
 	byteStream.WriteDouble(15.0);
 
-	char str[]{"Hello."};
-	char str0[5]="abc";
+	char str[]{ "Hello." };
+	char str0[5] = "abc";
 	int pos0[]{ 5,6,7 };
 	int pos[2]{ 1,2 };
 	byteStream.WriteArray(str, strlen(str));
@@ -32,15 +32,20 @@ int main(int argc, char* argv[])
 	auto a6 = byteStream.ReadDouble();
 
 	char str1[10]{};
-	auto a7 = byteStream.ReadArray(str1,8);
+	auto a7 = byteStream.ReadArray(str1, 8);
 	int pos1[3]{};
-	auto a9 = byteStream.ReadArray(pos1,3);
+	auto a9 = byteStream.ReadArray(pos1, 3);
 
 	char str2[10]{};
 	auto a8 = byteStream.ReadArray(str2, 10);
 	int pos2[6]{};
 	auto a10 = byteStream.ReadArray(pos2, 6);
+}
 
+int main(int argc, char* argv[])
+{
+	
+	test();
 
 	//MyClient client;
 	//CellLog::Instance().setLogPath("BitStreamForClientGoLog.txt", "w");

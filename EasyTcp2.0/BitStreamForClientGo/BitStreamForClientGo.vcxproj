@@ -23,6 +23,7 @@
     <ProjectGuid>{8ABA1259-FC8D-4693-896C-080BA0496CFA}</ProjectGuid>
     <RootNamespace>BitStreamForClientGo</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>ByteStreamForClientGo</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -146,7 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BitStreamForClientGo_main.cpp" />
+    <ClCompile Include="ByteStreamForClientGo_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyClient.hpp" />
