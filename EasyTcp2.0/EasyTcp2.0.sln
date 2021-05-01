@@ -9,7 +9,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpClient2.3", "EasyTcp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpServer2.4", "EasyTcpServer2.4\EasyTcpServer2.4.vcxproj", "{F8E43156-B216-4C4F-837F-A5C64A1F3642}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BitStreamForClientGo", "BitStreamForClientGo\BitStreamForClientGo.vcxproj", "{8ABA1259-FC8D-4693-896C-080BA0496CFA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ByteStreamForClientGo", "BitStreamForClientGo\BitStreamForClientGo.vcxproj", "{8ABA1259-FC8D-4693-896C-080BA0496CFA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpDLLGo", "EasyTcpDLLGo\EasyTcpDLLGo.vcxproj", "{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDLL", "TestDLL\TestDLL.vcxproj", "{375A75F2-29BA-448D-BBAC-9587CA841207}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,22 @@ Global
 		{8ABA1259-FC8D-4693-896C-080BA0496CFA}.Release|x64.Build.0 = Release|x64
 		{8ABA1259-FC8D-4693-896C-080BA0496CFA}.Release|x86.ActiveCfg = Release|Win32
 		{8ABA1259-FC8D-4693-896C-080BA0496CFA}.Release|x86.Build.0 = Release|Win32
+		{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}.Debug|x64.ActiveCfg = Debug|x64
+		{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}.Debug|x64.Build.0 = Debug|x64
+		{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}.Debug|x86.ActiveCfg = Debug|Win32
+		{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}.Debug|x86.Build.0 = Debug|Win32
+		{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}.Release|x64.ActiveCfg = Release|x64
+		{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}.Release|x64.Build.0 = Release|x64
+		{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}.Release|x86.ActiveCfg = Release|Win32
+		{662F3F78-8ABF-4FA7-83B7-10600C8A09DA}.Release|x86.Build.0 = Release|Win32
+		{375A75F2-29BA-448D-BBAC-9587CA841207}.Debug|x64.ActiveCfg = Debug|x64
+		{375A75F2-29BA-448D-BBAC-9587CA841207}.Debug|x64.Build.0 = Debug|x64
+		{375A75F2-29BA-448D-BBAC-9587CA841207}.Debug|x86.ActiveCfg = Debug|Win32
+		{375A75F2-29BA-448D-BBAC-9587CA841207}.Debug|x86.Build.0 = Debug|Win32
+		{375A75F2-29BA-448D-BBAC-9587CA841207}.Release|x64.ActiveCfg = Release|x64
+		{375A75F2-29BA-448D-BBAC-9587CA841207}.Release|x64.Build.0 = Release|x64
+		{375A75F2-29BA-448D-BBAC-9587CA841207}.Release|x86.ActiveCfg = Release|Win32
+		{375A75F2-29BA-448D-BBAC-9587CA841207}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
