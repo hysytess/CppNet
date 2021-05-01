@@ -29,13 +29,57 @@ public:
 	}
 public:
 //  Read byte stream
-	int8_t ReadInt8();
-	int16_t ReadInt16();
-	int32_t ReadInt32();
-	int64_t ReadInt64();
+	template<typename T>
+	bool Read(T& n)
+	{
+		auto nLen = sizeof(T);
+		// 判断能否读,是否在缓冲区区中[位置是否正确]
+		if (_nReadPos + nLen <= _nSize)
+		{
+			// 将要读取的数据拷贝出来
+			memcpy(&n, _pBuff + _nReadPos, nLen);
+			_nReadPos += nLen;
+			return true;
+		}
+		return false;
+	}
 
-	float ReadFloat();
-	double ReadDouble();
+	int8_t ReadInt8(int8_t def = 0)
+	{
+		Read(def);
+		return def;
+	}
+
+	int16_t ReadInt16(int16_t def = 0)
+	{
+		Read(def);
+		return def;
+	}
+
+	int32_t ReadInt32(int32_t def = 0)
+	{
+		Read(def);
+		return def;
+	}
+
+	int64_t ReadInt64(int64_t def = 0)
+	{
+		Read(def);
+		return def;
+	}
+
+	float ReadFloat(float def = 0.0f)
+	{
+		Read(def);
+		return def;
+	}
+
+	double ReadDouble(double def = 0.0)
+	{
+		Read(def);
+		return def;
+	}
+
 
 //  Write byte stream
 	template<typename T>
