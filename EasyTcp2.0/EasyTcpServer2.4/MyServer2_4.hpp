@@ -2,6 +2,7 @@
 #define _MYSERVER_HPP_
 
 #include "../depends/include/EasyTcpServer2_3.hpp"
+#include "../depends/include/CellMsgStream.hpp"
 
 //应用层
 class MyServer :public EasyTcpServer
@@ -43,7 +44,53 @@ public:
 		break;
 		case CMD_LOGOUT:
 		{
-			netmsg_Logout* logout = (netmsg_Logout*)header;
+			CellRecvStream byteStream(header);
+			// 预读取消息长度数据 抛掉(占位符) 
+			// 或由客户{MyClient:public EasyTcpClient,MyServer:public EasyTcpServer}读取
+			byteStream.ReadInt16();
+			byteStream.getNetCmd();
+			auto a1 = byteStream.ReadInt8();
+			auto a2 = byteStream.ReadInt16();
+			auto a3 = byteStream.ReadInt32();
+			auto a4 = byteStream.ReadInt64();
+			auto a5 = byteStream.ReadFloat();
+			auto a6 = byteStream.ReadDouble();
+
+			char str1[10]{};
+			auto a7 = byteStream.ReadArray(str1, 8);
+			int pos1[3]{};
+			auto a9 = byteStream.ReadArray(pos1, 3);
+
+			char str2[10]{};
+			auto a8 = byteStream.ReadArray(str2, 10);
+			int pos2[6]{};
+			auto a10 = byteStream.ReadArray(pos2, 6);
+
+			///////////////////////SEND BACK///////////////
+			CellSendStream byteStream1;
+
+			byteStream1.setNetCmd(CMD_LOGOUT_RESULT);
+
+			byteStream1.WriteInt8(5);
+			byteStream1.WriteInt16(6);
+			byteStream1.WriteInt32(7);
+			byteStream1.WriteInt64(8);
+
+			byteStream1.WriteFloat(14.0);
+			byteStream1.WriteDouble(15.0);
+
+			char str[]{ "server." };
+
+			char str0[5] = "abc";
+			int pos0[]{ 5,6,7 };
+			int pos[2]{ 1,2 };
+			byteStream1.WriteArray(str, strlen(str));
+			byteStream1.WriteArray(pos, 2);
+
+			byteStream1.WriteArray(str0, strlen(str0));
+			byteStream1.WriteArray(pos0, 3);
+			byteStream1.finsh();
+			pClient->SendData(byteStream1.data(), byteStream1.length());
 			//CellLog::Info("收到客户端<socket=%d>请求：CMD_LOGOUT，数据长度：%d, userName=%s", (int)cSock, login->dataLength, login->userName);
 			//netmsg_LogoutR ret;
 			//SendData(pClient, &ret);

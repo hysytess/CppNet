@@ -164,6 +164,11 @@ public:
 		return _pClient->SendData(header);
 	}
 
+	int SendData(const char* pData, int len)
+	{
+		return _pClient->SendData(pData, len);
+	}
+
 protected:
 	ClientSocket* _pClient = nullptr;
 

@@ -1,6 +1,6 @@
 #include "MyClient.hpp"
 
-void test()
+void testCellStream()
 {
 	// 字节流是有序的 [写入读取位置要对应]
 	// 写入 -3>c -2>b -1>a 缓冲区队列[cba->] 出队顺序:a[1] b[2] c[3]
@@ -40,21 +40,50 @@ void test()
 	auto a8 = byteStream.ReadArray(str2, 10);
 	int pos2[6]{};
 	auto a10 = byteStream.ReadArray(pos2, 6);
+
 }
 
 int main(int argc, char* argv[])
 {
 	
-	test();
+	testCellStream();
 
-	//MyClient client;
-	//CellLog::Instance().setLogPath("BitStreamForClientGoLog.txt", "w");
-	//client.Connect("127.0.0.1", 4567);
-	//while(client.isRun())
-	//{
-	//	client.OnRun();
-	//	CellThread::Sleep(10);
-	//}
+
+	CellSendStream byteStream;
+
+	byteStream.setNetCmd(CMD_LOGOUT);
+
+	byteStream.WriteInt8(5);
+	byteStream.WriteInt16(6);
+	byteStream.WriteInt32(7);
+	byteStream.WriteInt64(8);
+
+	byteStream.WriteFloat(14.0);
+	byteStream.WriteDouble(15.0);
+
+	char str[]{ "client." };
+	char str0[5] = "abc";
+	int pos0[]{ 5,6,7 };
+	int pos[2]{ 1,2 };
+	byteStream.WriteArray(str, strlen(str));
+	byteStream.WriteArray(pos, 2);
+
+	byteStream.WriteArray(str0, strlen(str0));
+	byteStream.WriteArray(pos0, 3);
+	byteStream.finsh();
+
+	CellLog::Instance().setLogPath("BitStreamForClientGoLog.txt", "w");
+
+	MyClient client;
+	client.Connect("127.0.0.1", 4567);
+
+	client.SendData(byteStream.data(),byteStream.length());
+
+	while(client.isRun())
+	{
+		client.OnRun();
+		CellThread::Sleep(10);
+	}
 
 	return 0;
 }

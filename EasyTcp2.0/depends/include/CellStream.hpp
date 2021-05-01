@@ -19,7 +19,7 @@ public:
 		_pBuff = new char[_nSize];
 		_bDelete = true;
 	}
-	~CellStream()
+	virtual ~CellStream()
 	{ 
 		if (_bDelete && _pBuff)
 		{
@@ -53,7 +53,14 @@ public:
 	{
 		_nReadPos += n;
 	}
-
+	inline void setWritePos(int n)
+	{
+		_nWritePos = n;
+	}
+	inline int getWritePos()
+	{
+		return _nWritePos;
+	}
 //  Read byte stream
 	template<typename T>
 	bool Read(T& n,bool bOffset = true)
