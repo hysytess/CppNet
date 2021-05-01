@@ -2,6 +2,9 @@
 
 int main(int argc, char* argv[])
 {
+	// 字节流是有序的 [写入读取位置要对应]
+	// 写入 -3>c -2>b -1>a 缓冲区队列[cba->] 出队顺序:a[1] b[2] c[3]
+	// 读取(接收顺序) -1>a -2>b -3>c
 	CellStream byteStream;
 	byteStream.WriteInt8(5);
 	byteStream.WriteInt16(6);
@@ -12,9 +15,14 @@ int main(int argc, char* argv[])
 	byteStream.WriteDouble(15.0);
 
 	char str[]{"Hello."};
+	char str0[5]="abc";
+	int pos0[]{ 5,6,7 };
 	int pos[2]{ 1,2 };
-	byteStream.WriteArray(&str, sizeof(str));
-	byteStream.WriteArray(&pos, sizeof(pos));
+	byteStream.WriteArray(str, strlen(str));
+	byteStream.WriteArray(pos, 2);
+
+	byteStream.WriteArray(str0, strlen(str0));
+	byteStream.WriteArray(pos0, 3);
 
 	auto a1 = byteStream.ReadInt8();
 	auto a2 = byteStream.ReadInt16();
@@ -23,6 +31,15 @@ int main(int argc, char* argv[])
 	auto a5 = byteStream.ReadFloat();
 	auto a6 = byteStream.ReadDouble();
 
+	char str1[10]{};
+	auto a7 = byteStream.ReadArray(str1,8);
+	int pos1[3]{};
+	auto a9 = byteStream.ReadArray(pos1,3);
+
+	char str2[10]{};
+	auto a8 = byteStream.ReadArray(str2, 10);
+	int pos2[6]{};
+	auto a10 = byteStream.ReadArray(pos2, 6);
 
 
 	//MyClient client;

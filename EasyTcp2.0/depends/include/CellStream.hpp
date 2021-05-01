@@ -27,21 +27,79 @@ public:
 			_pBuff = nullptr;
 		}
 	}
+
 public:
+	char* data()
+	{
+		return _pBuff;
+	}
+	int length()
+	{
+		return _nWritePos;
+	}
+	inline bool canRead(int n)
+	{
+		return _nSize - _nReadPos >= n;
+	}
+	inline bool canWrite(int n)
+	{
+		return _nSize - _nWritePos >= n;
+	}
+	inline void push(int n)
+	{
+		_nWritePos += n;
+	}
+	inline void pop(int n)
+	{
+		_nReadPos += n;
+	}
+
 //  Read byte stream
 	template<typename T>
-	bool Read(T& n)
+	bool Read(T& n,bool bOffset = true)
 	{
 		auto nLen = sizeof(T);
 		// 判断能否读,是否在缓冲区区中[位置是否正确]
-		if (_nReadPos + nLen <= _nSize)
+		if (canRead(nLen))
 		{
 			// 将要读取的数据拷贝出来
 			memcpy(&n, _pBuff + _nReadPos, nLen);
-			_nReadPos += nLen;
+			if (bOffset)
+				pop(nLen);
 			return true;
 		}
 		return false;
+	}
+
+	template<typename T>
+	bool onlyRead(T& n)
+	{
+		return Read(n, false);
+	}
+
+	template<typename T>
+	uint32_t ReadArray(T* pArr, uint32_t len)
+	{
+		// 读取数组元素个数
+		uint32_t len1 = 0;
+		Read(len1,false);
+		// 判断传进来的缓存数组能否放得下
+		if (len1 < len)
+		{
+			//计算数组的字节长度
+			auto nLen = len1 * sizeof(T);
+			//判断能否读出
+			if (canRead(nLen + sizeof(uint32_t)))
+			{
+				//计算已读位置+数组长度所占有空间
+				pop(sizeof(uint32_t));
+				
+				memcpy(pArr, _pBuff + _nReadPos, nLen);
+				pop(nLen);
+				return len1;
+			}
+		}
+		return 0;
 	}
 
 	int8_t ReadInt8(int8_t def = 0)
@@ -74,7 +132,7 @@ public:
 		return def;
 	}
 
-	double ReadDouble(double def = 0.0)
+	double ReadDouble(double def = 0.0f)
 	{
 		Read(def);
 		return def;
@@ -88,25 +146,25 @@ public:
 		//计算写入字节长度
 		auto nLen = sizeof(T);
 		//判读能否写入
-		if (_nWritePos + nLen <= _nSize)
+		if (canWrite(nLen))
 		{
 			memcpy(_pBuff + _nWritePos, &n, nLen);
-			_nWritePos += nLen;
+			push(nLen);
 			return true;
 		}
 		return false;
 	}
 	template<typename T>
-	bool WriteArray(T* array, uint32_t len)
+	bool WriteArray(T* pData, uint32_t len)
 	{
 		//计算写入数组字节长度
 		auto nLen = sizeof(T)*len;
 		//判读能否写入
-		if (_nWritePos + nLen + sizeof(uint32_t)<= _nSize)
+		if (canWrite(nLen + sizeof(uint32_t)))
 		{
-			WriteInt32(len);
-			memcpy(_pBuff + _nWritePos, array, nLen);
-			_nWritePos += nLen;
+			Write(len);
+			memcpy(_pBuff + _nWritePos, pData, nLen);
+			push(nLen);
 			return true;
 		}
 		return false;
