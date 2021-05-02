@@ -57,13 +57,13 @@ public:
 			auto a6 = byteStream.ReadDouble();
 
 			char str1[10]{};
-			auto a7 = byteStream.ReadArray(str1, 8);
-			int pos1[3]{};
-			auto a9 = byteStream.ReadArray(pos1, 3);
+			int pos1[10]{};
+			auto a7 = byteStream.ReadArray(str1, 10);
+			auto a9 = byteStream.ReadArray(pos1, 10);
 
 			char str2[10]{};
-			auto a8 = byteStream.ReadArray(str2, 10);
 			int pos2[6]{};
+			auto a8 = byteStream.ReadArray(str2, 10);
 			auto a10 = byteStream.ReadArray(pos2, 6);
 
 			///////////////////////SEND BACK///////////////
@@ -79,16 +79,17 @@ public:
 			byteStream1.WriteFloat(14.0);
 			byteStream1.WriteDouble(15.0);
 
+			
 			char str[]{ "server." };
-
-			char str0[5] = "zzz";
-			int pos0[]{ 5,6,7 };
-			int pos[2]{ 1,2 };
 			byteStream1.WriteArray(str, strlen(str));
+			int pos[2]{ 1,2 };
 			byteStream1.WriteArray(pos, 2);
 
-			byteStream1.WriteArray(str0, strlen(str0));
+			char str0[5] = "zzz";
 			byteStream1.WriteString(str0);
+			int pos0[]{ 5,6,7 };
+			byteStream1.WriteArray(pos0, 3);
+
 			byteStream1.finsh();
 			pClient->SendData(byteStream1.data(), byteStream1.length());
 			//CellLog::Info("收到客户端<socket=%d>请求：CMD_LOGOUT，数据长度：%d, userName=%s", (int)cSock, login->dataLength, login->userName);

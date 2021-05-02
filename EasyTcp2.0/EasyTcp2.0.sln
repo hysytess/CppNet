@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpDLLGo", "EasyTcpDLLG
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDLL", "TestDLL\TestDLL.vcxproj", "{375A75F2-29BA-448D-BBAC-9587CA841207}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpClientPulgin", "EasyTcpClientPulgin\EasyTcpClientPulgin.vcxproj", "{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -71,6 +73,14 @@ Global
 		{375A75F2-29BA-448D-BBAC-9587CA841207}.Release|x64.Build.0 = Release|x64
 		{375A75F2-29BA-448D-BBAC-9587CA841207}.Release|x86.ActiveCfg = Release|Win32
 		{375A75F2-29BA-448D-BBAC-9587CA841207}.Release|x86.Build.0 = Release|Win32
+		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Debug|x64.ActiveCfg = Debug|x64
+		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Debug|x64.Build.0 = Debug|x64
+		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Debug|x86.ActiveCfg = Debug|Win32
+		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Debug|x86.Build.0 = Debug|Win32
+		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Release|x64.ActiveCfg = Release|x64
+		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Release|x64.Build.0 = Release|x64
+		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Release|x86.ActiveCfg = Release|Win32
+		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
