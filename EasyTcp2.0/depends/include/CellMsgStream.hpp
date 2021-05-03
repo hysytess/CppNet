@@ -1,23 +1,33 @@
 #ifndef _CELL_MSG_STREAM_HPP_
 #define _CELL_MSG_STREAM_HPP_
 
-#include "../depends/include/CellStream.hpp"
+#include "CellStream.hpp"
+
 
 #include <string>
 
 //Receive message byte stream
-class CellRecvStream:public CellStream
+class CellReadStream:public CellStream
 {
 public:
-	CellRecvStream(netmsg_DataHeader* header)
-		:CellStream((char*)header,header->dataLength)
+	CellReadStream(netmsg_DataHeader* header)
+		:CellReadStream((char*)header,header->dataLength)
 	{
-		push(header->dataLength);
 		// 预读取消息长度数据 抛掉(占位符) 
 		// 或由客户{MyClient:public EasyTcpClient,MyServer:public EasyTcpServer}读取
 		//ReadInt16();
 		//getNetCmd();
 	}
+	CellReadStream(char* pData,int nSize,bool bDelete = false)
+		:CellStream((char*)pData, nSize, bDelete)
+	{
+		push(nSize);
+		// 预读取消息长度数据 抛掉(占位符) 
+		// 或由客户{MyClient:public EasyTcpClient,MyServer:public EasyTcpServer}读取
+		//ReadInt16();
+		//getNetCmd();
+	}
+
 	uint16_t getNetCmd()
 	{
 		uint16_t cmd = CMD_ERROR;
@@ -27,18 +37,18 @@ public:
 };
 
 //Send message byte stream
-class CellSendStream :public CellStream
+class CellWriteStream :public CellStream
 {
 public:
 	//	用户自定义的流缓冲区:外部缓冲区地址  外部缓冲区大小  是否需要自动释放
-	CellSendStream(char* pData, int nSize = 1024, bool bDelete = false)
+	CellWriteStream(char* pData, int nSize = 1024, bool bDelete = false)
 		:CellStream(pData, nSize, bDelete)
 	{
 		// 占位
 		Write<uint16_t>(0);
 	}
 
-	CellSendStream(int nSize = 1024)
+	CellWriteStream(int nSize = 1024)
 		:CellStream(nSize)
 	{
 		// 占位

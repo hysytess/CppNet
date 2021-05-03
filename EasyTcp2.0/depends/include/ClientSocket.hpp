@@ -14,11 +14,10 @@ public:
 	int id = -1;
 	int serverId = -1;
 public:
-	ClientSocket(SOCKET sockfd = INVALID_SOCKET)
+	ClientSocket(SOCKET sockfd = INVALID_SOCKET, int sendSize = SEND_BUFF_SZIE, int recvSize = RECV_BUFF_SZIE)
+		:_sendBuff(sendSize),
+		_recvBuff(recvSize)
 	{
-		_sendBuff.setSize(SEND_BUFF_SZIE);
-		_recvBuff.setSize(RECV_BUFF_SZIE);
-
 		static int n = 1;
 		id = n++;
 		_sockfd = sockfd;

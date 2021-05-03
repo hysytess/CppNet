@@ -3,6 +3,7 @@
 
 #include<string>
 #include"../depends/include/EasyTcpClient2_3.hpp"
+#include "../depends/include/CellMsgStream.hpp"
 
 #ifdef _WIN32
 #define EXPORT_DLL _declspec(dllexport)

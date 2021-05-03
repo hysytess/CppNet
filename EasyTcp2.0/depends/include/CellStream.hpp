@@ -122,8 +122,18 @@ public:
 		Read(def);
 		return def;
 	}
+	uint8_t ReadUInt8(uint8_t def = 0)
+	{
+		Read(def);
+		return def;
+	}
 
 	int16_t ReadInt16(int16_t def = 0)
+	{
+		Read(def);
+		return def;
+	}
+	uint16_t ReadUInt16(uint16_t def = 0)
 	{
 		Read(def);
 		return def;
@@ -134,8 +144,18 @@ public:
 		Read(def);
 		return def;
 	}
+	uint32_t ReadUInt32(uint32_t def = 0)
+	{
+		Read(def);
+		return def;
+	}
 
 	int64_t ReadInt64(int64_t def = 0)
+	{
+		Read(def);
+		return def;
+	}
+	uint64_t ReadUInt64(uint64_t def = 0)
 	{
 		Read(def);
 		return def;

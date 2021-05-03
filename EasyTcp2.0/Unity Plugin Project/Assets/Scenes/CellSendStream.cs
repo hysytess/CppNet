@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Text;
 using System.Globalization;
 
-public class CellSendStream : MonoBehaviour
+public class CellSendStream
 {
     // 数据缓冲区
     List<byte> _byteList = null;

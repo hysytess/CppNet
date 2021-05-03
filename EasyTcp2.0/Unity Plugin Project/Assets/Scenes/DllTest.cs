@@ -5,16 +5,24 @@ using System.Runtime.InteropServices;
 using AOT;
 
 
-public class DllTest : MonoBehaviour
+public class DllTest
 {
     //[DllImport("EasyTcpDLLGo")]
     //public static extern int Add(int a, int b);
     //[DllImport("EasyTcpDLLGo")]
     //public static extern int Sub(int a, int b);
 
+#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport("__Internal")]
+#else
     [DllImport("EasyTcpClientPulgin")]
+#endif
     public static extern int Add(int a, int b);
+#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport("__Internal")]
+#else
     [DllImport("EasyTcpClientPulgin")]
+#endif
     public static extern int Sub(int a, int b);
 
     // 代理:向外交互 调用其他语言函数 回调

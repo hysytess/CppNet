@@ -1,17 +1,18 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
+using System.Runtime.InteropServices;
 
-public class CellRecvStream : MonoBehaviour
+public class CellRecvStream
 {
 
-    private byte[] _buff = null;
+    private byte[] _buffer = null;
     private int _nReadPos = 0;
-    public CellRecvStream(byte[] data)
+    public CellRecvStream(IntPtr data, int len)
     {
-        _buff = data;
+        _buffer = new byte[len];
+        Marshal.Copy(data, _buffer, 0, len);
+       
     }
     private void Pop(int n)
     {
@@ -19,14 +20,14 @@ public class CellRecvStream : MonoBehaviour
     }
     private bool canRead(int n)
     {
-        return _buff.Length - _nReadPos >= n;
+        return _buffer.Length - _nReadPos >= n;
     }
 
     public sbyte ReadInt8(sbyte n = 0)
     {
         if (canRead(1))
         {
-            n = (sbyte)_buff[_nReadPos];
+            n = (sbyte)_buffer[_nReadPos];
             Pop(1);
         }
         return n;
@@ -35,7 +36,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(2))
         {
-            n = BitConverter.ToInt16(_buff, _nReadPos);
+            n = BitConverter.ToInt16(_buffer, _nReadPos);
             Pop(2);
         }
         return n;
@@ -44,7 +45,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(4))
         {
-            n = BitConverter.ToInt32(_buff, _nReadPos);
+            n = BitConverter.ToInt32(_buffer, _nReadPos);
             Pop(4);
         }
         return n;
@@ -53,7 +54,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(8))
         {
-            n = BitConverter.ToInt64(_buff, _nReadPos);
+            n = BitConverter.ToInt64(_buffer, _nReadPos);
             Pop(8);
         }
         return n;
@@ -63,7 +64,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(1))
         {
-            n = _buff[_nReadPos];
+            n = _buffer[_nReadPos];
             Pop(1);
         }
         return n;
@@ -72,7 +73,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(2))
         {
-            n = BitConverter.ToUInt16(_buff, _nReadPos);
+            n = BitConverter.ToUInt16(_buffer, _nReadPos);
             Pop(2);
         }
         return n;
@@ -81,7 +82,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(4))
         {
-            n = BitConverter.ToUInt32(_buff, _nReadPos);
+            n = BitConverter.ToUInt32(_buffer, _nReadPos);
             Pop(4);
         }
         return n;
@@ -90,7 +91,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(8))
         {
-            n = BitConverter.ToUInt64(_buff, _nReadPos);
+            n = BitConverter.ToUInt64(_buffer, _nReadPos);
             Pop(8);
         }
         return n;
@@ -100,7 +101,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(4))
         {
-            n = BitConverter.ToSingle(_buff, _nReadPos);
+            n = BitConverter.ToSingle(_buffer, _nReadPos);
             Pop(4);
         }
         return n;
@@ -109,7 +110,7 @@ public class CellRecvStream : MonoBehaviour
     {
         if (canRead(8))
         {
-            n = BitConverter.ToDouble(_buff, _nReadPos);
+            n = BitConverter.ToDouble(_buffer, _nReadPos);
             Pop(8);
         }
         return n;
@@ -121,7 +122,7 @@ public class CellRecvStream : MonoBehaviour
         int len = ReadInt32();
         if(canRead(len) && len > 0)
         {
-            str = Encoding.UTF8.GetString(_buff, _nReadPos, len);
+            str = Encoding.UTF8.GetString(_buffer, _nReadPos, len);
             Pop(len);
         }
         return str;

@@ -53,9 +53,11 @@
     <UnityVersion>2021.1.5f1c1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scenes\CellWriteStream.cs" />
     <Compile Include="Assets\Scenes\CellRecvStream.cs" />
     <Compile Include="Assets\Scenes\CellSendStream.cs" />
     <Compile Include="Assets\Scenes\ClientBehaviour.cs" />
+    <Compile Include="Assets\Scenes\CellReadStream.cs" />
     <Compile Include="Assets\Scenes\DllTest.cs" />
     <Compile Include="Assets\Scenes\ClientNode.cs" />
   </ItemGroup>

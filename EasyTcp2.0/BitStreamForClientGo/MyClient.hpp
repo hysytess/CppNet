@@ -13,7 +13,7 @@ public:
 		{
 		case CMD_LOGOUT_RESULT:
 		{
-			CellRecvStream byteStream(header);
+			CellReadStream byteStream(header);
 			byteStream.ReadInt16();
 			byteStream.getNetCmd();
 			auto a1 = byteStream.ReadInt8();

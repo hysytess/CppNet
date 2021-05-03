@@ -44,7 +44,7 @@ public:
 		break;
 		case CMD_LOGOUT:
 		{
-			CellRecvStream byteStream(header);
+			CellReadStream byteStream(header);
 			// 预读取消息长度数据 抛掉(占位符) 
 			// 或由客户{MyClient:public EasyTcpClient,MyServer:public EasyTcpServer}读取
 			byteStream.ReadInt16();
@@ -67,7 +67,7 @@ public:
 			auto a10 = byteStream.ReadArray(pos2, 6);
 
 			///////////////////////SEND BACK///////////////
-			CellSendStream byteStream1;
+			CellWriteStream byteStream1;
 
 			byteStream1.setNetCmd(CMD_LOGOUT_RESULT);
 

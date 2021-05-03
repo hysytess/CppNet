@@ -17,11 +17,20 @@ public enum NetCMD
     CMD_ERROR
 };
 
+ //: MonoBehaviour
 public class ClientBehaviour : MonoBehaviour
 {
+#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport("__Internal")]
+#else
     [DllImport("EasyTcpClientPulgin")]
+#endif
     public static extern int Add(int a, int b);
+#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport("__Internal")]
+#else
     [DllImport("EasyTcpClientPulgin")]
+#endif
     public static extern int Sub(int a, int b);
 
     // 消息回调
@@ -31,20 +40,18 @@ public class ClientBehaviour : MonoBehaviour
     public static void OnNetMsgCallBack1(IntPtr csObj, IntPtr data, int len)
     {
         // 将C++传入的对象指针还原为C#对象
-        Debug.Log("OnNetMsgCallBack1.len=" + len);
+        //Debug.Log("OnNetMsgCallBack1.len=" + len);
         GCHandle h = GCHandle.FromIntPtr(csObj);
         ClientBehaviour obj = h.Target as ClientBehaviour;
         if(obj)
         {
             // 将C++ 传入的数据转化为C#的字节数据
-            byte[] buffer = new byte[len];
-            Marshal.Copy(data,buffer,0,len);
-            obj.OnNetMsgBytes(buffer);
+            obj.OnNetMsgBytes(data,len);
         }
     }
 
     [DllImport("EasyTcpClientPulgin")]
-    private static extern IntPtr CellClient_Create(IntPtr csObj,OnNetMsgCallBack cbfun);
+    private static extern IntPtr CellClient_Create(IntPtr csObj,OnNetMsgCallBack cbfun,int sendSize = 10240, int recvSize = 10240);
     [DllImport("EasyTcpClientPulgin")]
     private static extern bool CellClient_Connect(IntPtr cppClientObj, string ip, short port);
     [DllImport("EasyTcpClientPulgin")]
@@ -53,6 +60,8 @@ public class ClientBehaviour : MonoBehaviour
     private static extern void CellClient_Close(IntPtr cppClientObj);
     [DllImport("EasyTcpClientPulgin")]
     private static extern int CellClient_SendData(IntPtr cppClientObj, byte[] data, int len);
+    [DllImport("EasyTcpClientPulgin")]
+    private static extern int CellClient_SendStream(IntPtr cppClientObj, IntPtr cppwClientObj);
 
     private GCHandle _handleThis;
     // this对象指针 在c++消息回调中传回
@@ -64,7 +73,7 @@ public class ClientBehaviour : MonoBehaviour
     {
         _handleThis = GCHandle.Alloc(this);
         _csThisObj = GCHandle.ToIntPtr(_handleThis);
-        _cppClientObj = CellClient_Create(GCHandle.ToIntPtr(_handleThis), OnNetMsgCallBack1);
+        _cppClientObj = CellClient_Create(GCHandle.ToIntPtr(_handleThis), OnNetMsgCallBack1,10240, 10240);
     }
     public bool Connect(string ip, short port)
     {
@@ -92,11 +101,23 @@ public class ClientBehaviour : MonoBehaviour
 
     public int SendData(byte[] data)
     {
+        if (_cppClientObj == IntPtr.Zero)
+            return 0;
         return CellClient_SendData(_cppClientObj, data,data.Length);
+    }
+    public int SendData(CellSendStream ss)
+    {
+        return SendData(ss.Array_);
+    }
+    public int SendData(CellWriteStream ws)
+    {
+        if (_cppClientObj == IntPtr.Zero)
+            return 0;
+        return CellClient_SendStream(_cppClientObj, ws.cppObj);
     }
 
     // 由子类实现字节流解析
-    public virtual void OnNetMsgBytes(byte[] data)
+    public virtual void OnNetMsgBytes(IntPtr data,int len)
     {
 
     }

@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	testCellStream();
 
 
-	CellSendStream byteStream;
+	CellWriteStream byteStream;
 
 	byteStream.setNetCmd(CMD_LOGOUT);
 

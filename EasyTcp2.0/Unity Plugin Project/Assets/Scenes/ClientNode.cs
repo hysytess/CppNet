@@ -20,7 +20,7 @@ public class ClientNode : ClientBehaviour
     // Update is called once per frame
     void Update()
     {
-        CellSendStream sendStream = new CellSendStream(1024);
+        CellWriteStream sendStream = new CellWriteStream(1024);
         sendStream.setNetCmd(NetCMD.CMD_LOGOUT);
 
         sendStream.WriteInt8(5);
@@ -39,7 +39,7 @@ public class ClientNode : ClientBehaviour
         sendStream.WriteString("abc");
         sendStream.WriteInt32Arr(pos0);
         sendStream.finsh();
-        this.SendData(sendStream.Array_);
+        this.SendData(sendStream);
 
         this.OnRun();
     }
@@ -50,9 +50,9 @@ public class ClientNode : ClientBehaviour
         Debug.Log("Exit.");
     }
 
-    public override void OnNetMsgBytes(byte[] data)
+    public override void OnNetMsgBytes(IntPtr data, int len)
     {
-        CellRecvStream recvStream = new CellRecvStream(data);
+        CellReadStream recvStream = new CellReadStream(data,len);
 
         UInt16 t = recvStream.ReadUInt16();
         NetCMD t1 = recvStream.ReadNetCmd();
