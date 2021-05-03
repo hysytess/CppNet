@@ -40,6 +40,7 @@ public class ClientNode : ClientBehaviour
         sendStream.WriteInt32Arr(pos0);
         sendStream.finsh();
         this.SendData(sendStream);
+        sendStream.Release();
 
         this.OnRun();
     }
@@ -68,5 +69,7 @@ public class ClientNode : ClientBehaviour
         
         string a9 = recvStream.ReadString();
         Int32[] a10 = recvStream.ReadInt32Array();
+
+        recvStream.Release();
     }
 }

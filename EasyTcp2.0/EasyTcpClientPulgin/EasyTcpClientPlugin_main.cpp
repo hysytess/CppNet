@@ -172,6 +172,12 @@ extern "C"
 		return false;
 	}
 
+	EXPORT_DLL void CellWriteStream_Release(CellWriteStream* wStream)
+	{
+		if (wStream)
+			delete wStream;
+	}
+
 	/////////////////////////////////Read stream/////////////////////////////
 	EXPORT_DLL void* CellReadStream_Create(char* data, int len)
 	{
@@ -259,4 +265,13 @@ extern "C"
 		}
 		return len;
 	}
+
+	EXPORT_DLL void CellReadStream_Release(CellWriteStream* pReadStream)
+	{
+		if (pReadStream)
+		{
+			delete pReadStream;
+		}
+	}
+
 }

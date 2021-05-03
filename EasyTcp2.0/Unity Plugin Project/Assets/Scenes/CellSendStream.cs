@@ -112,6 +112,9 @@ public class CellSendStream
         _byteList.InsertRange(0, BitConverter.GetBytes(len));
     }
 
+    public void Release()
+    {
+    }
 }
 
 

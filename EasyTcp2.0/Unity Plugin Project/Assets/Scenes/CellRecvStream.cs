@@ -148,4 +148,9 @@ public class CellRecvStream
     {
         return (NetCMD)ReadUInt16();
     }
+
+    public void Release()
+    {
+    }
+
 }

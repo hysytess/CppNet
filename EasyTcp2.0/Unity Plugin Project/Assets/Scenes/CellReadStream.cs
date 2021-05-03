@@ -84,6 +84,13 @@ public class CellReadStream
     [DllImport("EasyTcpClientPulgin")]
 #endif
     private static extern UInt32 CellReadStream_OnlyReadUint32(IntPtr cpprStremobj);
+
+#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport("__Internal")]
+#else
+    [DllImport("EasyTcpClientPulgin")]
+#endif
+    private static extern void CellReadStream_Release(IntPtr cpprStremobj);
     //--------------------------------------------------------------------------------------------------------------//
 
 
@@ -176,4 +183,8 @@ public class CellReadStream
         return data;
     }
 
+    public void Release()
+    {
+        CellReadStream_Release(_cpprStremobj);
+    }
 }

@@ -82,6 +82,13 @@ public class CellWriteStream
     [DllImport("EasyTcpClientPulgin")]
 #endif
     private static extern bool CellWriteStream_WriteString(IntPtr cppwStremobj, string str);
+
+#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport("__Internal")]
+#else
+    [DllImport("EasyTcpClientPulgin")]
+#endif
+    private static extern void CellWriteStream_Release(IntPtr cppwStremobj);
     //-------------------------------------------------------------------------------------------------//
 
     private IntPtr _cppwStreamObj = IntPtr.Zero;
@@ -182,6 +189,12 @@ public class CellWriteStream
         {
             WriteInt32(data[n]);
         }
+    }
+
+
+    public void Release()
+    {
+        CellWriteStream_Release(_cppwStreamObj);
     }
 
 }
