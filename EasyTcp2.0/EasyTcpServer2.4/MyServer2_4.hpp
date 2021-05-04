@@ -44,6 +44,8 @@ public:
 		break;
 		case CMD_LOGOUT:
 		{
+			pClient->resetDTHeart();
+
 			CellReadStream byteStream(header);
 			// 预读取消息长度数据 抛掉(占位符) 
 			// 或由客户{MyClient:public EasyTcpClient,MyServer:public EasyTcpServer}读取

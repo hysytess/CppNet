@@ -1,0 +1,21 @@
+﻿  HelloWorldScene.cpp
+g:\giteelocal\cppnet\easytcp2.0\cocospluginproject\classes\helloworldscene.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\cellmsgstream.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\cellstream.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\publiclib.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\publiclib.hpp(5): warning C4005: “FD_SETSIZE”: 宏重定义
+  f:\windows kits\10\include\10.0.17763.0\um\winsock2.h(133): note: 参见“FD_SETSIZE”的前一个定义
+g:\giteelocal\cppnet\easytcp2.0\depends\include\publiclib.hpp(7): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
+  g:\giteelocal\cppnet\easytcp2.0\cocospluginproject\classes\helloworldscene.cpp: note: 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
+g:\giteelocal\cppnet\easytcp2.0\depends\include\celltask.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\cellsemaphore.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\easytcpclient2_3.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\clientsocket.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\cellmsgbuffer.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+g:\giteelocal\cppnet\easytcp2.0\depends\include\easytcpclient2_3.hpp(53): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  f:\windows kits\10\include\10.0.17763.0\um\winsock2.h(1831): note: 参见“inet_addr”的声明
+  复制了 60 个文件
+  CocosPluginProject.vcxproj -> G:\GiteeLocal\CppNet\EasyTcp2.0\CocosPluginProject\proj.win32\Debug.win32\CocosPluginProject.exe
+  Performing Custom Build Step
+  G:\GiteeLocal\CppNet\EasyTcp2.0\CocosPluginProject\Resources\BitStreamForClientGoLog.txt -> G:\GiteeLocal\CppNet\EasyTcp2.0\CocosPluginProject\proj.win32\Debug.win32\BitStreamForClientGoLog.txt
+  复制了 1 个文件
