@@ -19,7 +19,7 @@ public:
 		Close();
 	}
 
-	void InitSocket(int sendSize = SEND_BUFF_SZIE,int recvSize = RECV_BUFF_SZIE)
+	SOCKET InitSocket(int sendSize = SEND_BUFF_SZIE,int recvSize = RECV_BUFF_SZIE)
 	{
 		CellNetWork::Init();
 		if (_pClient)
@@ -27,32 +27,50 @@ public:
 			CellLog::Info("<socket=%d>old connection was disconnected...\n", (int)_pClient->sockfd());
 			Close();
 		}
-		SOCKET _sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-		if (INVALID_SOCKET == _sock)
+		SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+		if (INVALID_SOCKET == sock)
 		{
-			CellLog::Info("Error, create socket<%d> fail...\n", (int)_sock);
+			CellLog::Info("Error, create socket<%d> fail...\n", (int)sock);
 		}
 		else
 		{
-			_pClient = new ClientSocket(_sock,sendSize,recvSize);
+			_pClient = new ClientSocket(sock,sendSize,recvSize);
 			//CellLog::Info("Create socket=<%d> sucess...\n", (int)_sock);
 		}
+		return sock;
 	}
 
 	int Connect(const char* ip, unsigned short port)
 	{
 		if (!_pClient)
 		{
-			InitSocket();
+			if (INVALID_SOCKET == InitSocket())
+			{
+				return SOCKET_ERROR;
+			}
 		}
 		sockaddr_in _sin{};
 		_sin.sin_family = AF_INET;
-		_sin.sin_port = htons(port);
+		if (port)
+			_sin.sin_port = htons(port);
+		else
+			_sin.sin_port = htons(4567);
 #ifdef _WIN32
 		if (ip)
 			_sin.sin_addr.S_un.S_addr = inet_addr(ip);
+		else
+		{
+			ip = "127.0.0.1";
+			_sin.sin_addr.S_un.S_addr = inet_addr(ip);
+		}
 #else
-		_sin.sin_addr.s_addr = inet_addr(ip);
+		if(ip)
+			_sin.sin_addr.s_addr = inet_addr(ip);
+		else
+		{
+			ip = "127.0.0.1";
+			_sin.sin_addr.s_addr = inet_addr("127.0.0.1");
+		}
 #endif // _WIN32
 		//CellLog::Info("<socket=%d> connect to host<%s:%d>...\n", (int)_sock, ip, port);
 		int ret = connect(_pClient->sockfd(), (sockaddr*)&_sin, sizeof(sockaddr_in));
@@ -78,11 +96,12 @@ public:
 		_isConnected = false;
 	}
 
-	bool OnRun()
+	bool OnRun(int microseconds = 1)
 	{
 		if (isRun())
 		{
 			SOCKET sock = _pClient->sockfd();
+			
 			fd_set fdReads;
 			FD_ZERO(&fdReads);
 			FD_SET(sock, &fdReads);
@@ -90,7 +109,7 @@ public:
 			fd_set fdWrite;
 			FD_ZERO(&fdWrite);
 
-			timeval tv = { 0,1 };
+			timeval tv = { 0,microseconds };
 			int ret = 0;
 			if (_pClient->needWrite())
 			{

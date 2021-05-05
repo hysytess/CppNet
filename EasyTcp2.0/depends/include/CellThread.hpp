@@ -70,6 +70,7 @@ protected:
 		if (_OnDestory)
 			_OnDestory(this);
 		_sem.wakeup();
+		_isRun = false;
 	}
 private:
 	EventCall _OnCreate;

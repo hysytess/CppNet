@@ -1,0 +1,17 @@
+Info[2021-5-6 23:1:48]CellConfig::getStr not find <strIp>
+Info[2021-5-6 23:1:48]CellConfig::getStr strIp=127.0.0.1
+Info[2021-5-6 23:1:48]CellConfig::getStr not find <nPort>
+Info[2021-5-6 23:1:48]CellConfig::getInt nPort=4567
+Info[2021-5-6 23:1:48]CellConfig::getStr not find <nThread>
+Info[2021-5-6 23:1:48]CellConfig::getInt nThread=1
+Info[2021-5-6 23:1:48]CellConfig::getStr not find <nClient>
+Info[2021-5-6 23:1:48]CellConfig::getInt nClient=100
+Debug[2021-5-6 23:1:48]<127.0.0.1:4567>, thread=1, clientcount=100
+Info[2021-5-6 23:1:48]CellConfig::getStr not find <nSendBuffSize>
+Info[2021-5-6 23:1:48]CellConfig::getInt nSendBuffSize=10240
+Info[2021-5-6 23:1:48]CellConfig::getStr not find <nRecvBuffSize>
+Info[2021-5-6 23:1:48]CellConfig::getInt nRecvBuffSize=10240
+Info[2021-5-6 23:1:48]CellConfig::getStr not find <nMaxClient>
+Info[2021-5-6 23:1:48]CellConfig::getInt nMaxClient=65535
+Debug[2021-5-6 23:1:48]<socket=184> was created...
+Debug[2021-5-6 23:1:48]Port<4567> bind sucess...

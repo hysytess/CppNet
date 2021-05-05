@@ -91,7 +91,19 @@ public:
 		if (_nLast > 0 && INVALID_SOCKET != _sockfd)
 		{
 			ret = send(_sockfd, _pBuff, _nLast, 0);
-			_nLast = 0;
+			if (ret <= 0)
+			{
+				return SOCKET_ERROR;
+			}
+			if (ret == _nLast)
+			{
+				_nLast = 0;
+			}
+			else
+			{
+				_nLast -= ret;
+				memcpy(_pBuff, _pBuff + ret, _nLast);
+			}
 			_buffFullCount = 0;
 		}
 		return ret;
@@ -105,7 +117,7 @@ public:
 			int nLen = (int)recv(sockfd, szRecv, _nSize - _nLast, 0);
 			if (nLen <= 0)
 			{
-				return nLen;
+				return SOCKET_ERROR;
 			}
 			// 缓冲区数据尾部后移
 			_nLast += nLen;

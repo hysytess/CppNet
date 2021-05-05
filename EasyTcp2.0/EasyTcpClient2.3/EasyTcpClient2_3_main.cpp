@@ -103,7 +103,7 @@ void sendThread(int id)
 
 int main(int argc, char* argv[])
 {
-	CellLog::Instance().setLogPath("ClientLog.txt","w");
+	CellLog::Instance().setLogPath("client",nullptr,"w");
 
 	std::thread t(cmdThread);
 	t.detach();

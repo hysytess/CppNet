@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-	CellLog::Instance().setLogPath("serverLog.txt", "w");
+	CellLog::Instance().setLogPath("server", nullptr, "w");
 	MyServer server;
 	server.InitSocket();
 	server.Bind(nullptr, 4567);

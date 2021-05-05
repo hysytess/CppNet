@@ -17,6 +17,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDLL", "TestDLL\TestDLL.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpClientPulgin", "EasyTcpClientPulgin\EasyTcpClientPulgin.vcxproj", "{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpServer2.5", "EasyTcpServer2.5\EasyTcpServer2.5.vcxproj", "{F665F403-B990-4DD0-B053-25DA484BB5E7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyTcpClient2.5", "EasyTcpClien2.5\EasyTcpClien2.5.vcxproj", "{C890A56D-40E1-442A-AB68-9994EFC566C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +85,22 @@ Global
 		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Release|x64.Build.0 = Release|x64
 		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Release|x86.ActiveCfg = Release|Win32
 		{BB5DEE8F-85DC-4C49-9C11-02FBC0AABB4C}.Release|x86.Build.0 = Release|Win32
+		{F665F403-B990-4DD0-B053-25DA484BB5E7}.Debug|x64.ActiveCfg = Debug|x64
+		{F665F403-B990-4DD0-B053-25DA484BB5E7}.Debug|x64.Build.0 = Debug|x64
+		{F665F403-B990-4DD0-B053-25DA484BB5E7}.Debug|x86.ActiveCfg = Debug|Win32
+		{F665F403-B990-4DD0-B053-25DA484BB5E7}.Debug|x86.Build.0 = Debug|Win32
+		{F665F403-B990-4DD0-B053-25DA484BB5E7}.Release|x64.ActiveCfg = Release|x64
+		{F665F403-B990-4DD0-B053-25DA484BB5E7}.Release|x64.Build.0 = Release|x64
+		{F665F403-B990-4DD0-B053-25DA484BB5E7}.Release|x86.ActiveCfg = Release|Win32
+		{F665F403-B990-4DD0-B053-25DA484BB5E7}.Release|x86.Build.0 = Release|Win32
+		{C890A56D-40E1-442A-AB68-9994EFC566C1}.Debug|x64.ActiveCfg = Debug|x64
+		{C890A56D-40E1-442A-AB68-9994EFC566C1}.Debug|x64.Build.0 = Debug|x64
+		{C890A56D-40E1-442A-AB68-9994EFC566C1}.Debug|x86.ActiveCfg = Debug|Win32
+		{C890A56D-40E1-442A-AB68-9994EFC566C1}.Debug|x86.Build.0 = Debug|Win32
+		{C890A56D-40E1-442A-AB68-9994EFC566C1}.Release|x64.ActiveCfg = Release|x64
+		{C890A56D-40E1-442A-AB68-9994EFC566C1}.Release|x64.Build.0 = Release|x64
+		{C890A56D-40E1-442A-AB68-9994EFC566C1}.Release|x86.ActiveCfg = Release|Win32
+		{C890A56D-40E1-442A-AB68-9994EFC566C1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

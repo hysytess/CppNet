@@ -13,6 +13,8 @@ class ClientSocket
 public:
 	int id = -1;
 	int serverId = -1;
+	int nRecvMsgID = 1;
+	int nSendMsgID = 1;
 public:
 	ClientSocket(SOCKET sockfd = INVALID_SOCKET, int sendSize = SEND_BUFF_SZIE, int recvSize = RECV_BUFF_SZIE)
 		:_sendBuff(sendSize),
