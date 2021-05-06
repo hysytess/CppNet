@@ -61,7 +61,8 @@ protected:
 			}
 			if (_tasks.empty())
 			{
-				CellThread::Sleep(1);
+				std::chrono::milliseconds t(1);
+				std::this_thread::sleep_for(t);
 				continue;
 			}
 			// 处理任务

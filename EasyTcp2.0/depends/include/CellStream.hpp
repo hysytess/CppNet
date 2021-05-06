@@ -97,7 +97,7 @@ public:
 		//读取数组元素个数,但不偏移读取位置
 		Read(len1, false);
 		//判断缓存数组能否放得下
-		if (len1 <= len)
+		if (len1 < len)
 		{
 			//计算数组的字节长度
 			auto nLen = len1 * sizeof(T);
@@ -173,22 +173,7 @@ public:
 		return def;
 	}
 
-	bool ReadString(std::string& str)
-	{
-		uint32_t nLen = 0;
-		Read(nLen, false);
-		if (nLen > 0)
-		{
-			if (canRead(nLen + sizeof(uint32_t)))
-			{
-				pop(sizeof(uint32_t));
-				str.insert(0, _pBuff + _nReadPos, nLen);
-				pop(nLen);
-				return true;
-			}
-		}
-		return false;
-	}
+
 //  Write byte stream
 	template<typename T>
 	bool Write(T n)

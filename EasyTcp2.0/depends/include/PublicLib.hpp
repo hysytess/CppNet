@@ -2,7 +2,7 @@
 #define _PUBLICLIB_HPP_
 
 #ifdef _WIN32
-#define FD_SETSIZE      65535
+#define FD_SETSIZE      2506
 #define WIN32_LEAN_AND_MEAN
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
@@ -31,16 +31,8 @@
 #include "CELLTimestamp.hpp"
 #include "CELLTask.hpp"
 #include "CellLog.hpp"
-#include "CellConfig.hpp"
-
-#ifdef _DEBUG
-#define Info(...) Debug(__VA_ARGS__)
-#else
-#define Info(...) Info(__VA_ARGS__)
-#endif
 
 #include<stdio.h>
-#include <string>
 #include <iostream>
 #include <algorithm>
 

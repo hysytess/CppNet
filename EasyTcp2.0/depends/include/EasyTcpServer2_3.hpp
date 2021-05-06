@@ -6,7 +6,6 @@
 #include "CellServer.hpp"
 #include "INETEVENT.hpp"
 #include "CellNetWork.hpp"
-#include "CellConfig.hpp"
 
 #include <thread>
 #include <mutex>
@@ -22,10 +21,6 @@ private:
 	CELLTimestamp _tTime;
 	SOCKET _sock;
 
-	int _nSendBuffSize = SEND_BUFF_SZIE;
-	int _nRecvBuffSize = RECV_BUFF_SZIE;
-	int _nMaxClient = 10000;
-
 protected:
 	std::atomic_int _recvCount;
 	std::atomic_int _msgCount;
@@ -39,10 +34,6 @@ public:
 		_recvCount = 0;
 		_msgCount = 0;
 		_clientCount = 0;
-		
-		_nSendBuffSize = CellConfig::Instance().getInt("nSendBuffSize", SEND_BUFF_SZIE);
-		_nRecvBuffSize = CellConfig::Instance().getInt("nRecvBuffSize", RECV_BUFF_SZIE);
-		_nMaxClient = CellConfig::Instance().getInt("nMaxClient", FD_SETSIZE);
 	}
 	virtual ~EasyTcpServer()
 	{
@@ -150,20 +141,8 @@ public:
 		}
 		else
 		{
-			if (_clientCount <= _nMaxClient)
-			{
-				addClientToCellServer(new ClientSocket(csock,_nSendBuffSize,_nRecvBuffSize));
-			}
-			else
-			{
-#ifdef _WIN32
-				closesocket(csock);
-#else
-				close(csock);
-#endif // _WIN32
-				CellLog::Warning("The client queue is full.");
-				//client ip: inet_ntoa(clientAddr.sin_addr);
-			}
+			addClientToCellServer(new ClientSocket(csock));
+			//client ip: inet_ntoa(clientAddr.sin_addr);
 		}
 		return csock;
 	}
@@ -190,7 +169,7 @@ public:
 			// 注册网络事件接受对象
 			ser->setEventObj(this);
 			// 启动消息线程
-			ser->Start();
+			ser->CellsrvStart();
 		}
 		_cellThread.Start(nullptr,
 			[this](CellThread* pThread) {OnRun(pThread); });

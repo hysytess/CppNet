@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 	byteStream.WriteArray(pos0, 3);
 	byteStream.finsh();
 
-	CellLog::Instance().setLogPath("BitStreamForClientGo", nullptr, "w");
+	CellLog::Instance().setLogPath("BitStreamForClientGoLog.txt", "w");
 
 	MyClient client;
 	client.Connect("127.0.0.1", 4567);

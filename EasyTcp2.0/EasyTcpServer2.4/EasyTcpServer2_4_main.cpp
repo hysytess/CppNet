@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[])
 {
-	CellLog::Instance().setLogPath("server_v2_4", nullptr, "w");
+	CellLog::Instance().setLogPath("serverLog_v2_4.txt", "w");
 	MyServer server;
 	server.InitSocket();
 	server.Bind(nullptr, 4567);
