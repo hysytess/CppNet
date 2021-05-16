@@ -11,7 +11,7 @@ public:
 	{
 		EasyTcpServer::OnNetJoin(pClient);
 		_clientMap.insert(std::pair<SOCKET, ClientSocket*>(pClient->sockfd(), pClient));
-		//CellLog::Info("client<%d> join.\n", pClient->sockfd());
+		//CellLog::Info("client<%d> join.", pClient->sockfd());
 	}
 
 	virtual void OnNetLeave(ClientSocket* pClient)
@@ -19,7 +19,7 @@ public:
 		EasyTcpServer::OnLeave(pClient);
 		if (_clientMap.count(pClient->sockfd()))
 			_clientMap.erase(pClient->sockfd());
-		//CellLog::Info("client<%d> leave.\n", (int)pClient->sockfd());
+		//CellLog::Info("client<%d> leave.", (int)pClient->sockfd());
 	}
 
 	virtual void OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, netmsg_DataHeader* header)
@@ -37,7 +37,7 @@ public:
 			if (SOCKET_ERROR == pClient->SendData(&ret))
 			{
 				// 消息发送缓冲区满了,消息没发出去
-				CellLog::Info("<Socket=%d> Send full buff.\n", pClient->sockfd());
+				CellLog::Info("<Socket=%d> Send full buff.", pClient->sockfd());
 			}
 		}
 		break;
@@ -59,7 +59,7 @@ public:
 		break;
 		default:
 		{
-			CellLog::Info("<socket=%d>Error infomation, dataLength: %d\n", (int)pClient->sockfd(), header->dataLength);
+			CellLog::Info("<socket=%d>Error infomation, dataLength: %d", (int)pClient->sockfd(), header->dataLength);
 		}
 		break;
 		}

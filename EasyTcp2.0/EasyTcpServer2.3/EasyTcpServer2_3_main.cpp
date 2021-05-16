@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-	CellLog::Instance().setLogPath("serverLog.txt", "w");
+	CellLog::Instance().setLogPath("serverLog2_3", "w");
 	MyServer server;
 	server.InitSocket();
 	server.Bind(nullptr, 4567);
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	CellLog::Info("exit.\n");
+	CellLog::Info("exit.");
 
 	std::chrono::milliseconds t(100);
 	std::this_thread::sleep_for(t);

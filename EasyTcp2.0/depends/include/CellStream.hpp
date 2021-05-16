@@ -80,7 +80,7 @@ public:
 		}
 		//方法1 断言assert()
 		//2 CellLog
-		//CellLog::Info("error,CellStream::Read failed.\n");
+		//CellLog::Info("error,CellStream::Read failed.");
 		return false;
 	}
 
@@ -113,7 +113,7 @@ public:
 				return len1;
 			}
 		}
-		//CellLog::Info("error, CELLStream::ReadArray failed.\n");
+		//CellLog::Info("error, CELLStream::ReadArray failed.");
 		return 0;
 	}
 
@@ -187,7 +187,7 @@ public:
 			push(nLen);
 			return true;
 		}
-		//CellLog::Info("error,CellStream::Write failed.\n");
+		//CellLog::Info("error,CellStream::Write failed.");
 		return false;
 	}
 	template<typename T>
@@ -203,7 +203,7 @@ public:
 			push(nLen);
 			return true;
 		}
-		//CellLog::Info("error,CellStream::WriteArray failed.\n");
+		//CellLog::Info("error,CellStream::WriteArray failed.");
 		return false;
 	}
 

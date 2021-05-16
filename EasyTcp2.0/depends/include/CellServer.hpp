@@ -22,9 +22,9 @@ public:
 	}
 	~CellServer()
 	{
-		CellLog::Info("CellServer%d.~CellServer exit.code:1\n", _id);
+		CellLog::Info("CellServer%d.~CellServer exit.code:1", _id);
 		Close();
-		CellLog::Info("CellServer%d.~CellServer exit.code:2\n", _id);
+		CellLog::Info("CellServer%d.~CellServer exit.code:2", _id);
 
 	}
 
@@ -35,10 +35,10 @@ public:
 
 	void Close()
 	{
-		CellLog::Info("CellServer%d closed.code:1\n", _id);
+		CellLog::Info("CellServer%d closed.code:1", _id);
 		_taskServer.Close();
 		_cellThread.Close();
-		CellLog::Info("CellServer%d closed.code:2\n", _id);
+		CellLog::Info("CellServer%d closed.code:2", _id);
 	}
 
 	void OnRun(CellThread* pThread)
@@ -98,7 +98,7 @@ public:
 			int ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, nullptr, &tv);
 			if (ret < 0)
 			{
-				CellLog::Info("CellServer%d.OnRun.Select error...exit.\n", _id);
+				CellLog::Info("CellServer%d.OnRun.Select error...exit.", _id);
 				pThread->Exit();
 				break;
 			}
@@ -112,7 +112,7 @@ public:
 			//WriteData(fdExp);
 			CheckTime();
 		}
-		CellLog::Info("CELLServer%d.OnRun exit\n", _id);
+		CellLog::Info("CELLServer%d.OnRun exit", _id);
 	};
 
 	// 心跳检测

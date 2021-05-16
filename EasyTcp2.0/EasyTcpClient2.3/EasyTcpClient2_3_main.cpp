@@ -23,7 +23,7 @@ void cmdThread()
 		if (!strcmp(cmdBuf, "exit"))
 		{
 			g_bRun = false;
-			CellLog::Info("exit.\n");
+			CellLog::Info("exit.");
 			break;
 		}
 	}
@@ -103,7 +103,7 @@ void sendThread(int id)
 
 int main(int argc, char* argv[])
 {
-	CellLog::Instance().setLogPath("ClientLog.txt","w");
+	CellLog::Instance().setLogPath("ClientLog2_3","w");
 
 	std::thread t(cmdThread);
 	t.detach();

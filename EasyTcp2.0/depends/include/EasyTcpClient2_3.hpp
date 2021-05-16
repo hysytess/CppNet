@@ -24,18 +24,18 @@ public:
 		CellNetWork::Init();
 		if (_pClient)
 		{
-			CellLog::Info("<socket=%d>old connection was disconnected...\n", (int)_pClient->sockfd());
+			CellLog::Info("<socket=%d>old connection was disconnected...", (int)_pClient->sockfd());
 			Close();
 		}
 		SOCKET _sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (INVALID_SOCKET == _sock)
 		{
-			CellLog::Info("Error, create socket<%d> fail...\n", (int)_sock);
+			CellLog::Info("Error, create socket<%d> fail...", (int)_sock);
 		}
 		else
 		{
 			_pClient = new ClientSocket(_sock,sendSize,recvSize);
-			//CellLog::Info("Create socket=<%d> sucess...\n", (int)_sock);
+			//CellLog::Info("Create socket=<%d> sucess...", (int)_sock);
 		}
 	}
 
@@ -54,16 +54,16 @@ public:
 #else
 		_sin.sin_addr.s_addr = inet_addr(ip);
 #endif // _WIN32
-		//CellLog::Info("<socket=%d> connect to host<%s:%d>...\n", (int)_sock, ip, port);
+		//CellLog::Info("<socket=%d> connect to host<%s:%d>...", (int)_sock, ip, port);
 		int ret = connect(_pClient->sockfd(), (sockaddr*)&_sin, sizeof(sockaddr_in));
 		if (SOCKET_ERROR == ret)
 		{
-			CellLog::Info("<socket=%d> error, connect to host<%s:%d> fail...\n", (int)_pClient->sockfd(), ip, port);
+			CellLog::Info("<socket=%d> error, connect to host<%s:%d> fail...", (int)_pClient->sockfd(), ip, port);
 		}
 		else
 		{
 			_isConnected = true;
-			//CellLog::Info("<socket=%d> connect to host<%s:%d> sucess.\n", (int)_sock, ip, port);
+			//CellLog::Info("<socket=%d> connect to host<%s:%d> sucess.", (int)_sock, ip, port);
 		}
 		return ret;
 	}
@@ -104,7 +104,7 @@ public:
 			
 			if (ret < 0)
 			{
-				CellLog::Info("<socket=%d>select done. terminal code:1\n", (int)sock);
+				CellLog::Info("<socket=%d>select done. terminal code:1", (int)sock);
 				Close();
 				return false;
 			}
@@ -113,7 +113,7 @@ public:
 				//FD_CLR(_sock, &fdReads);
 				if (-1 == RecvData(sock))
 				{
-					CellLog::Info("<socket=%d>select done. terminal code:2\n", (int)sock);
+					CellLog::Info("<socket=%d>select done. terminal code:2", (int)sock);
 					Close();
 					return false;
 				}

@@ -36,7 +36,7 @@ public:
 		break;
 		default:
 		{
-			CellLog::Info("Error! <socket=%d>, dataLength: %d\n", (int)_pClient->sockfd(), header->dataLength);
+			CellLog::Info("Error! <socket=%d>, dataLength: %d", (int)_pClient->sockfd(), header->dataLength);
 		}
 		}
 	}

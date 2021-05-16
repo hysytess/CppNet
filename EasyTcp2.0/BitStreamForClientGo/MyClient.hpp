@@ -33,18 +33,18 @@ public:
 			int pos2[6]{};
 			auto a10 = byteStream.ReadArray(pos2, 6);
 
-			//printf("<socket=%d>收到服务器消息：CMD_LOGIN_RESULT,数据长度：%d\n", _pClient->sockfd(), header->dataLength);
+			//printf("<socket=%d>收到服务器消息：CMD_LOGIN_RESULT,数据长度：%d", _pClient->sockfd(), header->dataLength);
 		}
 		break;
 		case CMD_ERROR:
 		{
 			netmsg_NewUserJoin* userJoin = (netmsg_NewUserJoin*)header;
-			//printf("<socket=%d>收到服务器消息：CMD_ERROR,数据长度：%d\n", _pClient->sockfd(), header->dataLength);
+			//printf("<socket=%d>收到服务器消息：CMD_ERROR,数据长度：%d", _pClient->sockfd(), header->dataLength);
 		}
 		break;
 		default:
 		{
-			CellLog::Info("Error! <socket=%d>, dataLength: %d\n", (int)_pClient->sockfd(), header->dataLength);
+			CellLog::Info("Error! <socket=%d>, dataLength: %d", (int)_pClient->sockfd(), header->dataLength);
 		}
 		}
 	}
