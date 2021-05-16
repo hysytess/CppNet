@@ -3,6 +3,7 @@
 
 #include "CellLog.hpp"
 #include <cstdint>
+#include <string>
 
 //Byte Stream
 class CellStream

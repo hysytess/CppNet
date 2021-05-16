@@ -49,10 +49,10 @@ public:
 			//val值:127.0.0.1
 			_kv[cmd] = val;
 			
-			CellLog::Info("madeCmd k<%s> v<%s>\n", cmd, val);
+			CellLog::Info("madeCmd k<%s> v<%s>", cmd, val);
 		} else {
 			_kv[cmd] = "";
-			CellLog::Info("madeCmd k<%s>\n", cmd);
+			CellLog::Info("madeCmd k<%s>", cmd);
 		}
 	}
 
@@ -61,11 +61,11 @@ public:
 		auto itr = _kv.find(argName);
 		if (itr == _kv.end())
 		{
-			CellLog::Info("CellConfig::getStr not find <%s>\n", argName);
+			CellLog::Info("CellConfig::getStr not find <%s>", argName);
 		} else {
 			def = itr->second.c_str();
 		}
-		CellLog::Info("CellConfig::getStr %s=%s\n", argName, def);
+		CellLog::Info("CellConfig::getStr %s=%s", argName, def);
 		return def;
 	}
 
@@ -74,12 +74,12 @@ public:
 		auto itr = _kv.find(argName);
 		if (itr == _kv.end())
 		{
-			CellLog::Info("CellConfig::getStr not find <%s>\n", argName);
+			CellLog::Info("CellConfig::getStr not find <%s>", argName);
 		}
 		else {
 			def = atoi(itr->second.c_str());
 		}
-		CellLog::Info("CellConfig::getInt %s=%d\n", argName, def);
+		CellLog::Info("CellConfig::getInt %s=%d", argName, def);
 		return def;
 	}
 
