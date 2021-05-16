@@ -180,7 +180,7 @@ public:
 			auto iter = _clients.find(fdWrite.fd_array[n]);
 			if (iter != _clients.end())
 			{
-				if (-1 == iter->second->SendDataReal())
+				if (SOCKET_ERROR == iter->second->SendDataReal())
 				{
 					onClientLeave(iter->second);
 					_clients.erase(iter);
@@ -193,7 +193,7 @@ public:
 		{
 			if (iter->second->needWrite() && FD_ISSET(iter->second->sockfd(), &fdWrite))
 			{
-				if (-1 == iter->second->SendDataReal())
+				if (SOCKET_ERROR == iter->second->SendDataReal())
 				{
 					onClientLeave(iter->second);
 					auto iterOld = iter;
@@ -216,7 +216,7 @@ public:
 			auto iter = _clients.find(fdRead.fd_array[n]);
 			if (iter != _clients.end())
 			{
-				if (-1 == RecvData(iter->second))
+				if (SOCKET_ERROR == RecvData(iter->second))
 				{
 					onClientLeave(iter->second);
 					_clients.erase(iter);
@@ -229,7 +229,7 @@ public:
 		{
 			if (FD_ISSET(iter->second->sockfd(), &fdRead))
 			{
-				if (-1 == RecvData(iter->second))
+				if (SOCKET_ERROR == RecvData(iter->second))
 				{
 					onClientLeave(iter->second);
 					auto iterOld = iter;
@@ -298,13 +298,13 @@ public:
 		return _clients.size() + _clientsBuff.size();
 	}
 
-	void addSendTask(ClientSocket* pClient, netmsg_DataHeader* header)
-	{
-		_taskServer.addTask([pClient, header]() {
-			pClient->SendData(header);
-			delete header;
-		});
-	}
+	//void addSendTask(ClientSocket* pClient, netmsg_DataHeader* header)
+	//{
+	//	_taskServer.addTask([pClient, header]() {
+	//		pClient->SendData(header);
+	//		delete header;
+	//	});
+	//}
 
 private:
 	void Clearclients()
