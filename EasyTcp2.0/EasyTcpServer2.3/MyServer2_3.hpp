@@ -11,7 +11,7 @@ public:
 	{
 		EasyTcpServer::OnNetJoin(pClient);
 		_clientMap.insert(std::pair<SOCKET, ClientSocket*>(pClient->sockfd(), pClient));
-		//CellLog::Info("client<%d> join.", pClient->sockfd());
+		//CellLog_Debug("client<%d> join.", pClient->sockfd());
 	}
 
 	virtual void OnNetLeave(ClientSocket* pClient)
@@ -19,7 +19,7 @@ public:
 		EasyTcpServer::OnLeave(pClient);
 		if (_clientMap.count(pClient->sockfd()))
 			_clientMap.erase(pClient->sockfd());
-		//CellLog::Info("client<%d> leave.", (int)pClient->sockfd());
+		//CellLog_Debug("client<%d> leave.", (int)pClient->sockfd());
 	}
 
 	virtual void OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, netmsg_DataHeader* header)
@@ -31,20 +31,20 @@ public:
 		{
 			pClient->resetDTHeart();
 			netmsg_Login *login = (netmsg_Login*)header;
-			//CellLog::Info("收到客户端<socket=%d>请求：CMD_LOGIN，数据长度：%d, userName=%s passWord=%s", (int)cSock, login->dataLength, login->userName, login->PassWord);
+			//CellLog_Debug("收到客户端<socket=%d>请求：CMD_LOGIN，数据长度：%d, userName=%s passWord=%s", (int)cSock, login->dataLength, login->userName, login->PassWord);
 			netmsg_LoginR ret;
 			//实时发送 性能更好
 			if (SOCKET_ERROR == pClient->SendData(&ret))
 			{
 				// 消息发送缓冲区满了,消息没发出去
-				CellLog::Info("<Socket=%d> Send full buff.", pClient->sockfd());
+				CellLog_Debug("<Socket=%d> Send full buff.", pClient->sockfd());
 			}
 		}
 		break;
 		case CMD_LOGOUT:
 		{
 			netmsg_Logout* logout = (netmsg_Logout*)header;
-			//CellLog::Info("收到客户端<socket=%d>请求：CMD_LOGOUT，数据长度：%d, userName=%s", (int)cSock, login->dataLength, login->userName);
+			//CellLog_Debug("收到客户端<socket=%d>请求：CMD_LOGOUT，数据长度：%d, userName=%s", (int)cSock, login->dataLength, login->userName);
 			//netmsg_LogoutR ret;
 			//SendData(pClient, &ret);
 		}
@@ -59,7 +59,7 @@ public:
 		break;
 		default:
 		{
-			CellLog::Info("<socket=%d>Error infomation, dataLength: %d", (int)pClient->sockfd(), header->dataLength);
+			CellLog_Debug("<socket=%d>Error infomation, dataLength: %d", (int)pClient->sockfd(), header->dataLength);
 		}
 		break;
 		}

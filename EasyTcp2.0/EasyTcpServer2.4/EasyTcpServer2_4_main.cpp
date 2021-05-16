@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	CellLog::Info("exit.");
+	CellLog_Debug("exit.");
 
 	std::chrono::milliseconds t(100);
 	std::this_thread::sleep_for(t);

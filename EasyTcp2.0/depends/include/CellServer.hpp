@@ -22,9 +22,9 @@ public:
 	}
 	~CellServer()
 	{
-		CellLog::Info("CellServer%d.~CellServer exit.code:1", _id);
+		CellLog_Debug("CellServer%d.~CellServer exit.code:1", _id);
 		Close();
-		CellLog::Info("CellServer%d.~CellServer exit.code:2", _id);
+		CellLog_Debug("CellServer%d.~CellServer exit.code:2", _id);
 
 	}
 
@@ -35,10 +35,10 @@ public:
 
 	void Close()
 	{
-		CellLog::Info("CellServer%d closed.code:1", _id);
+		CellLog_Debug("CellServer%d closed.code:1", _id);
 		_taskServer.Close();
 		_cellThread.Close();
-		CellLog::Info("CellServer%d closed.code:2", _id);
+		CellLog_Debug("CellServer%d closed.code:2", _id);
 	}
 
 	void OnRun(CellThread* pThread)
@@ -67,6 +67,8 @@ public:
 				continue;
 			}
 
+			CheckTime();
+
 			fd_set fdRead;
 			fd_set fdWrite;
 			//fd_set fdExp;
@@ -90,29 +92,49 @@ public:
 			{
 				memcpy(&fdRead, &_fdRead_bak, sizeof(fd_set));
 			}
-			memcpy(&fdWrite, &_fdRead_bak, sizeof(fd_set));
-			//memcpy(&fdExp, &_fdRead_bak, sizeof(fd_set));
 
+			bool bNeedWrite = false;
+
+			//检测是否有可写客户端
+			FD_ZERO(&fdWrite);
+			for (auto iter : _clients )
+			{
+				if (iter.second->needWrite())
+				{
+					bNeedWrite = true;
+					FD_SET(iter.second->sockfd(),&fdWrite);
+				}
+			}
+
+			//memcpy(&fdWrite, &_fdRead_bak, sizeof(fd_set));
+			//memcpy(&fdExp, &_fdRead_bak, sizeof(fd_set));
+			 
 			timeval tv{ 0,1 };
-			// 若要在CellServer中处理其他业务则用非阻塞模式
-			int ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, nullptr, &tv);
+			int ret = 0;
+			if (bNeedWrite)
+			{
+				ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, nullptr, &tv);
+			}
+			else
+			{
+				ret = (int)select(_maxSock + 1, &fdRead, nullptr, nullptr, &tv);
+			}
 			if (ret < 0)
 			{
-				CellLog::Info("CellServer%d.OnRun.Select error...exit.", _id);
+				CellLog_Debug("CellServer%d.OnRun.Select error...exit.", _id);
 				pThread->Exit();
 				break;
 			}
-			//else if (ret == 0)
-			//{
-			//	continue;
-			//}
+			else if (ret == 0)
+			{
+				continue;
+			}
 
 			ReadData(fdRead);
 			WriteData(fdWrite);
 			//WriteData(fdExp);
-			CheckTime();
 		}
-		CellLog::Info("CELLServer%d.OnRun exit", _id);
+		CellLog_Debug("CELLServer%d.OnRun exit", _id);
 	};
 
 	// 心跳检测
@@ -169,7 +191,7 @@ public:
 #else
 		for (auto iter = _clients.begin(); iter != _clients.end(); )
 		{
-			if (FD_ISSET(iter->second->sockfd(), &fdWrite))
+			if (iter->second->needWrite() && FD_ISSET(iter->second->sockfd(), &fdWrite))
 			{
 				if (-1 == iter->second->SendDataReal())
 				{

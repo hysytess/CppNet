@@ -13,7 +13,21 @@ class CellLog
 	// Error
 #ifdef _DEBUG
 
+#ifndef CellLog_Debug
+#define CellLog_Debug(...) CellLog::Debug(__VA_ARGS__)
+#endif
+
+#else
+
+#ifndef CellLog_Debug
+#define	CellLog_Debug(...) CellLog::Info(__VA_ARGS__)
+#endif
+
 #endif // _DEBUG
+
+#define CellLog_Info(...) CellLog::Info(__VA_ARGS__)
+#define CellLog_Warring(...) CellLog::Warring(__VA_ARGS__)
+#define CellLog_Error(...) CellLog::Error(__VA_ARGS__)
 
 
 private:

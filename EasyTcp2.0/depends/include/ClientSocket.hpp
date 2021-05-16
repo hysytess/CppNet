@@ -27,7 +27,7 @@ public:
 	}
 	~ClientSocket()
 	{
-		//CellLog::Info("s=%d CellClient%d closed.code:1",serverId, id);
+		//CellLog_Debug("s=%d CellClient%d closed.code:1",serverId, id);
 		if (INVALID_SOCKET != _sockfd)
 		{
 #ifdef _WIN32
@@ -110,7 +110,7 @@ public:
 		_dtHeart += dt;
 		if (_dtHeart >= CLIENT_HEART_DEAD_TIME)
 		{
-			//CellLog::Info("checkHeart dead:s=%d,time=%d", _sockfd, _dtHeart);
+			//CellLog_Debug("checkHeart dead:s=%d,time=%d", _sockfd, _dtHeart);
 			return true;
 		}
 		return false;
@@ -123,7 +123,7 @@ public:
 		{
 			// 立即发送在发送缓冲区中的数据
 			// 重置超时计数 _dtSend
-			//CellLog::Info("Send timeout.");
+			//CellLog_Debug("Send timeout.");
 			SendDataReal();
 			resetDTSend();
 			return true;

@@ -39,9 +39,9 @@ public:
 
 	void Close()
 	{
-		//CellLog::Info("CELLTask%d closed.code:1", _serverId);
+		//CellLog_Debug("CELLTask%d closed.code:1", _serverId);
 		_cellThread.Close();
-		//CellLog::Info("CELLTask%d closed.code:2", _serverId);
+		//CellLog_Debug("CELLTask%d closed.code:2", _serverId);
 	}
 
 protected:
@@ -78,7 +78,7 @@ protected:
 		{
 			pTask();
 		}
-		//CellLog::Info("CellServer%d::OnRun() exit.code:%d(0 normal)", _serverId,_cellThread.isRun());
+		//CellLog_Debug("CellServer%d::OnRun() exit.code:%d(0 normal)", _serverId,_cellThread.isRun());
 	}
 };
 #endif

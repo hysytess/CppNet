@@ -23,7 +23,7 @@ void cmdThread()
 		if (!strcmp(cmdBuf, "exit"))
 		{
 			g_bRun = false;
-			CellLog::Info("exit.");
+			CellLog_Debug("exit.");
 			break;
 		}
 	}

@@ -54,17 +54,17 @@ public:
 
 		if (INVALID_SOCKET != _sock)
 		{
-			CellLog::Info("<socket=%d>old connection was disconneted.", (int)_sock);
+			CellLog_Debug("<socket=%d>old connection was disconneted.", (int)_sock);
 			Close();
 		}
 		_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (INVALID_SOCKET == _sock)
 		{
-			CellLog::Info("Error, Create socket fail...");
+			CellLog_Debug("Error, Create socket fail...");
 		}
 		else
 		{
-			CellLog::Info("<socket=%d> was created...", (int)_sock);
+			CellLog_Debug("<socket=%d> was created...", (int)_sock);
 		}
 		return _sock;
 	}
@@ -101,11 +101,11 @@ public:
 		int ret = bind(_sock, (sockaddr*)&_sin, sizeof(_sin));
 		if (SOCKET_ERROR == ret)
 		{
-			CellLog::Info("Error, bind port<%d> fail...", port);
+			CellLog_Debug("Error, bind port<%d> fail...", port);
 		}
 		else
 		{
-			CellLog::Info("Port<%d> bind sucess...", port);
+			CellLog_Debug("Port<%d> bind sucess...", port);
 		}
 		return ret;
 	}
@@ -115,11 +115,11 @@ public:
 		int ret = listen(_sock, n);
 		if (SOCKET_ERROR == ret)
 		{
-			CellLog::Info("<socket=%d> listen error...", (int)_sock);
+			CellLog_Debug("<socket=%d> listen error...", (int)_sock);
 		}
 		else
 		{
-			CellLog::Info("<socket=%d> listen, wait for client connect...", (int)_sock);
+			CellLog_Debug("<socket=%d> listen, wait for client connect...", (int)_sock);
 		}
 		return ret;
 	}
@@ -137,7 +137,7 @@ public:
 #endif
 		if (INVALID_SOCKET == csock)
 		{
-			CellLog::Info("socket=<%d> error, invalid SOCKET...", (int)csock);
+			CellLog_Debug("socket=<%d> error, invalid SOCKET...", (int)csock);
 		}
 		else
 		{
@@ -177,7 +177,7 @@ public:
 
 	void Close()
 	{
-		CellLog::Info("Server2.2 closed.code:1");
+		CellLog_Debug("Server2.2 closed.code:1");
 		_cellThread.Close();
 		if (_sock != INVALID_SOCKET)
 		{
@@ -193,7 +193,7 @@ public:
 #endif
 			_sock = INVALID_SOCKET;
 		}
-		CellLog::Info("Server2.2 closed.code:2");
+		CellLog_Debug("Server2.2 closed.code:2");
 
 	}
 
@@ -235,7 +235,7 @@ private:
 
 			if (ret < 0)
 			{
-				CellLog::Info("EasyTcpServer.accept.select exit.");
+				CellLog_Debug("EasyTcpServer.accept.select exit.");
 				pThread->Exit();
 				break;
 			}
@@ -253,7 +253,7 @@ private:
 		auto t1 = _tTime.getElapsedSecond();
 		if (t1 >= 1.0)
 		{
-			CellLog::Info("thread<%d>,time<%lf>,listen<%d>,client<%d>,receive<%d>,msg<%d>", (int)_cellServers.size(), t1, (int)_sock, (int)_clientCount, (int)(_recvCount / t1), (int)(_msgCount / t1));
+			CellLog_Debug("thread<%d>,time<%lf>,listen<%d>,client<%d>,receive<%d>,msg<%d>", (int)_cellServers.size(), t1, (int)_sock, (int)_clientCount, (int)(_recvCount / t1), (int)(_msgCount / t1));
 			_recvCount = 0;
 			_msgCount = 0;
 			_tTime.update();
