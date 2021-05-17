@@ -1,0 +1,74 @@
+Info [2021-5-17 18:57:21]CellLog::setFilePath <serverLog2_6[2021-5-17_18-57-21].txt,w>
+Info [2021-5-17 18:57:21]CellConfig::getStr not find <strIP>
+Info [2021-5-17 18:57:21]CellConfig::getStr strIP=any
+Info [2021-5-17 18:57:21]CellConfig::getStr not find <nPort>
+Info [2021-5-17 18:57:21]CellConfig::getInt nPort=4567
+Info [2021-5-17 18:57:21]CellConfig::getStr not find <nThread>
+Info [2021-5-17 18:57:21]CellConfig::getInt nThread=4
+Info [2021-5-17 18:57:21]CellConfig::getStr not find <nSendBuffSize>
+Info [2021-5-17 18:57:21]CellConfig::getInt nSendBuffSize=10240
+Info [2021-5-17 18:57:21]CellConfig::getStr not find <nRecvBuffSize>
+Info [2021-5-17 18:57:21]CellConfig::getInt nRecvBuffSize=10240
+Info [2021-5-17 18:57:21]CellConfig::getStr not find <nMaxClient>
+Info [2021-5-17 18:57:21]CellConfig::getInt nMaxClient=10240
+Debug [2021-5-17 18:57:21]<socket=192> was created...
+Debug [2021-5-17 18:57:21]Port<4567> bind sucess...
+Debug [2021-5-17 18:57:21]<socket=192> listen, wait for client connect...
+Debug [2021-5-17 18:57:22]thread<4>,time<1.000329>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:23]thread<4>,time<1.010697>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:24]thread<4>,time<1.010133>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:25]thread<4>,time<1.013068>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:26]thread<4>,time<1.008993>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:27]thread<4>,time<1.013286>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:28]thread<4>,time<1.009784>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:29]thread<4>,time<1.006358>,listen<192>,client<2500>,receive<476>,msg<4760>
+Debug [2021-5-17 18:57:30]thread<4>,time<1.004511>,listen<192>,client<2500>,receive<23191>,msg<231230>
+Debug [2021-5-17 18:57:31]thread<4>,time<1.004506>,listen<192>,client<2500>,receive<26326>,msg<264010>
+Debug [2021-5-17 18:57:32]thread<4>,time<1.004717>,listen<192>,client<2500>,receive<25000>,msg<250000>
+Debug [2021-5-17 18:57:33]thread<4>,time<1.004624>,listen<192>,client<2500>,receive<25000>,msg<250000>
+Debug [2021-5-17 18:57:34]thread<4>,time<1.004510>,listen<192>,client<2500>,receive<25379>,msg<253580>
+Debug [2021-5-17 18:57:35]thread<4>,time<1.005197>,listen<192>,client<2500>,receive<24621>,msg<246420>
+Debug [2021-5-17 18:57:36]thread<4>,time<1.004537>,listen<192>,client<2500>,receive<25000>,msg<250000>
+Debug [2021-5-17 18:57:37]thread<4>,time<1.004734>,listen<192>,client<2500>,receive<26132>,msg<261320>
+Debug [2021-5-17 18:57:38]thread<4>,time<1.005051>,listen<192>,client<2500>,receive<24575>,msg<245750>
+Debug [2021-5-17 18:57:39]thread<4>,time<1.004377>,listen<192>,client<2500>,receive<24293>,msg<242930>
+Debug [2021-5-17 18:57:40]thread<4>,time<1.004335>,listen<192>,client<2500>,receive<26274>,msg<262538>
+Debug [2021-5-17 18:57:41]thread<4>,time<1.004868>,listen<192>,client<2500>,receive<25132>,msg<251067>
+Debug [2021-5-17 18:57:42]thread<4>,time<1.004729>,listen<192>,client<2500>,receive<24340>,msg<243790>
+Debug [2021-5-17 18:57:43]thread<4>,time<1.005028>,listen<192>,client<2500>,receive<24254>,msg<242540>
+Debug [2021-5-17 18:57:44]thread<4>,time<1.004295>,listen<192>,client<2500>,receive<27500>,msg<275000>
+Debug [2021-5-17 18:57:45]thread<4>,time<1.004963>,listen<192>,client<2500>,receive<24459>,msg<244530>
+Debug [2021-5-17 18:57:46]thread<4>,time<1.004570>,listen<192>,client<2500>,receive<25311>,msg<253132>
+Debug [2021-5-17 18:57:47]thread<4>,time<1.004497>,listen<192>,client<2500>,receive<25230>,msg<252331>
+Debug [2021-5-17 18:57:48]thread<4>,time<1.006801>,listen<192>,client<0>,receive<15000>,msg<150000>
+Debug [2021-5-17 18:57:49]thread<4>,time<1.011180>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:50]thread<4>,time<1.012521>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:51]thread<4>,time<1.013151>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:52]thread<4>,time<1.014084>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:53]thread<4>,time<1.009897>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:54]thread<4>,time<1.011833>,listen<192>,client<0>,receive<0>,msg<0>
+Debug [2021-5-17 18:57:55]Server2.2 closed.code:1
+Debug [2021-5-17 18:57:55]CellServer1.~CellServer exit.code:1
+Debug [2021-5-17 18:57:55]CellServer1 closed.code:1
+Debug [2021-5-17 18:57:55]CELLServer1.OnRun exit
+Debug [2021-5-17 18:57:55]CellServer1 closed.code:2
+Debug [2021-5-17 18:57:55]CellServer1.~CellServer exit.code:2
+Debug [2021-5-17 18:57:55]CellServer2.~CellServer exit.code:1
+Debug [2021-5-17 18:57:55]CellServer2 closed.code:1
+Debug [2021-5-17 18:57:55]CELLServer2.OnRun exit
+Debug [2021-5-17 18:57:55]CellServer2 closed.code:2
+Debug [2021-5-17 18:57:55]CellServer2.~CellServer exit.code:2
+Debug [2021-5-17 18:57:55]CellServer3.~CellServer exit.code:1
+Debug [2021-5-17 18:57:55]CellServer3 closed.code:1
+Debug [2021-5-17 18:57:55]CELLServer3.OnRun exit
+Debug [2021-5-17 18:57:55]CellServer3 closed.code:2
+Debug [2021-5-17 18:57:55]CellServer3.~CellServer exit.code:2
+Debug [2021-5-17 18:57:55]CellServer4.~CellServer exit.code:1
+Debug [2021-5-17 18:57:55]CellServer4 closed.code:1
+Debug [2021-5-17 18:57:55]CELLServer4.OnRun exit
+Debug [2021-5-17 18:57:55]CellServer4 closed.code:2
+Debug [2021-5-17 18:57:55]CellServer4.~CellServer exit.code:2
+Debug [2021-5-17 18:57:55]Server2.2 closed.code:2
+Debug [2021-5-17 18:57:55]exit.
+Debug [2021-5-17 18:57:55]Server2.2 closed.code:1
+Debug [2021-5-17 18:57:55]Server2.2 closed.code:2

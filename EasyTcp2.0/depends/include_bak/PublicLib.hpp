@@ -2,7 +2,7 @@
 #define _PUBLICLIB_HPP_
 
 #ifdef _WIN32
-#define FD_SETSIZE      10240
+#define FD_SETSIZE      2506
 #define WIN32_LEAN_AND_MEAN
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS

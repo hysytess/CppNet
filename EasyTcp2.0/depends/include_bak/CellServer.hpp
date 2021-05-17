@@ -60,91 +60,82 @@ public:
 			}
 			if (_clients.empty())
 			{
-				CellThread::Sleep(1);
+				std::chrono::milliseconds t(1);
+				std::this_thread::sleep_for(t);
 				// 更新 心跳时间戳
 				_old_time = CELLTime::getNowInMillisec();
 				continue;
 			}
 
 			CheckTime();
-			if (!DoSelect())
+
+			fd_set fdRead;
+			fd_set fdWrite;
+			//fd_set fdExp;
+
+			if (_clients_change)
 			{
+				_clients_change = false;
+				FD_ZERO(&fdRead);
+				_maxSock = _clients.begin()->second->sockfd();
+				for (auto iter : _clients)
+				{
+					FD_SET(iter.second->sockfd(), &fdRead);
+					if (_maxSock < iter.second->sockfd())
+					{
+						_maxSock = iter.second->sockfd();
+					}
+				}
+				memcpy(&_fdRead_bak, &fdRead, sizeof(fd_set));
+			}
+			else
+			{
+				memcpy(&fdRead, &_fdRead_bak, sizeof(fd_set));
+			}
+
+			bool bNeedWrite = false;
+
+			//检测是否有可写客户端
+			FD_ZERO(&fdWrite);
+			for (auto iter : _clients )
+			{
+				if (iter.second->needWrite())
+				{
+					bNeedWrite = true;
+					FD_SET(iter.second->sockfd(),&fdWrite);
+				}
+			}
+
+			//memcpy(&fdWrite, &_fdRead_bak, sizeof(fd_set));
+			//memcpy(&fdExp, &_fdRead_bak, sizeof(fd_set));
+			 
+			timeval tv{ 0,1 };
+			int ret = 0;
+			if (bNeedWrite)
+			{
+				ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, nullptr, &tv);
+			}
+			else
+			{
+				ret = (int)select(_maxSock + 1, &fdRead, nullptr, nullptr, &tv);
+			}
+			if (ret < 0)
+			{
+				CellLog_Debug("CellServer%d.OnRun.Select error...exit.", _id);
 				pThread->Exit();
 				break;
 			}
-			DoMsg();
+			else if (ret == 0)
+			{
+				continue;
+			}
+
+			ReadData(fdRead);
+			WriteData(fdWrite);
+			//WriteData(fdExp);
 		}
 		CellLog_Debug("CELLServer%d.OnRun exit", _id);
-	}
-
-	bool DoSelect()
-	{
-
-		fd_set fdRead;
-		fd_set fdWrite;
-		//fd_set fdExp;
-
-		if (_clients_change)
-		{
-			_clients_change = false;
-			FD_ZERO(&fdRead);
-			_maxSock = _clients.begin()->second->sockfd();
-			for (auto iter : _clients)
-			{
-				FD_SET(iter.second->sockfd(), &fdRead);
-				if (_maxSock < iter.second->sockfd())
-				{
-					_maxSock = iter.second->sockfd();
-				}
-			}
-			memcpy(&_fdRead_bak, &fdRead, sizeof(fd_set));
-		}
-		else
-		{
-			memcpy(&fdRead, &_fdRead_bak, sizeof(fd_set));
-		}
-
-		bool bNeedWrite = false;
-
-		//检测是否有可写客户端
-		FD_ZERO(&fdWrite);
-		for (auto iter : _clients)
-		{
-			if (iter.second->needWrite())
-			{
-				bNeedWrite = true;
-				FD_SET(iter.second->sockfd(), &fdWrite);
-			}
-		}
-
-		//memcpy(&fdWrite, &_fdRead_bak, sizeof(fd_set));
-		//memcpy(&fdExp, &_fdRead_bak, sizeof(fd_set));
-
-		timeval tv{ 0,1 };
-		int ret = 0;
-		if (bNeedWrite)
-		{
-			ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, nullptr, &tv);
-		}
-		else
-		{
-			ret = (int)select(_maxSock + 1, &fdRead, nullptr, nullptr, &tv);
-		}
-		if (ret < 0)
-		{
-			CellLog_Debug("CellServer%d.OnRun.Select error...exit.", _id);
-			return false;
-		}
-		else if (ret == 0)
-		{
-			return true;
-		}
-
-		ReadData(fdRead);
-		WriteData(fdWrite);
-		//WriteData(fdExp);
-		return true; //
-	}
+	};
 
 	// 心跳检测
 	void CheckTime()
@@ -252,22 +243,6 @@ public:
 #endif
 	}
 
-	void DoMsg()
-	{
-		ClientSocket* pClient = nullptr;
-		for (auto iter :_clients )
-		{
-			auto pClient = iter.second;
-			while (pClient->hasMsg())
-			{
-				// 处理接收到完整的数据
-				OnNetMsg(pClient, pClient->front_msg());
-				// 移除在缓冲区队列头 已处理的数据
-				pClient->pop_front_msg();
-			}
-		}
-	}
-
 	int RecvData(ClientSocket* pClient)
 	{
 		// 收数据
@@ -280,6 +255,13 @@ public:
 		// 触发接收事件 【pClient】 对象
 		_pNetEvent->OnNetRecv(pClient);
 
+		while (pClient->hasMsg())
+		{
+			// 处理接收到完整的数据
+			OnNetMsg(pClient, pClient->front_msg());
+			// 移除在缓冲区队列头 已处理的数据
+			pClient->pop_front_msg();
+		}
 		return 0;
 	}
 

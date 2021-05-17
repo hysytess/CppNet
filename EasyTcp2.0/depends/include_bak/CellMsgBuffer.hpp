@@ -117,7 +117,7 @@ public:
 			int nLen = (int)recv(sockfd, szRecv, _nSize - _nLast, 0);
 			if (nLen <= 0)
 			{
-				return SOCKET_ERROR;
+				return nLen;
 			}
 			// 缓冲区数据尾部后移
 			_nLast += nLen;
