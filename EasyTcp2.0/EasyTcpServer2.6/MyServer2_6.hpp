@@ -7,7 +7,16 @@
 //应用层
 class MyServer :public EasyTcpServer
 {
+
 public:
+
+	MyServer()
+	{
+		_bSendBack = CellConfig::Instance().hasKey("-sendback");
+		_bSendFull = CellConfig::Instance().hasKey("-sendfull");
+		_bCheckMsgID = CellConfig::Instance().hasKey("-checkMsgID");
+	}
+
 	virtual void OnNetJoin(ClientSocket* pClient)
 	{
 		EasyTcpServer::OnNetJoin(pClient);
@@ -32,13 +41,30 @@ public:
 		{
 			pClient->resetDTHeart();
 			netmsg_Login *login = (netmsg_Login*)header;
-			//CellLog_Debug("收到客户端<socket=%d>请求：CMD_LOGIN，数据长度：%d, userName=%s passWord=%s", (int)cSock, login->dataLength, login->userName, login->PassWord);
-			netmsg_LoginR ret;
-			//实时发送 性能更好
-			if (SOCKET_ERROR == pClient->SendData(&ret))
+			if (_bCheckMsgID)
 			{
-				// 消息发送缓冲区满了,消息没发出去
-				//CellLog_Debug("<Socket=%d> Send full buff.", pClient->sockfd());
+				if (login->msgID != pClient->_nRecvMsgID)
+				{
+
+				}
+				++pClient->_nRecvMsgID;
+			}
+			if (_bSendBack)
+			{
+				//CellLog_Debug("收到客户端<socket=%d>请求：CMD_LOGIN，数据长度：%d, userName=%s passWord=%s", (int)cSock, login->dataLength, login->userName, login->PassWord);
+				netmsg_LoginR ret;
+				ret.msgID = pClient->_nRecvMsgID;
+				//实时发送 性能更好
+				if (SOCKET_ERROR == pClient->SendData(&ret))
+				{
+					// 消息发送缓冲区满了,消息没发出去
+					if (_bSendFull)
+						CellLog_Debug("<Socket=%d> Send full buff.", pClient->sockfd());
+				}
+				else
+				{
+					++pClient->_nSendMsgID;
+				}
 			}
 		}
 		break;
@@ -133,5 +159,9 @@ public:
 	}
 private:
 	std::map<SOCKET, ClientSocket*>_clientMap;
+	bool _bCheckMsgID = false;
+	bool _bSendBack = false;
+	bool _bSendFull = false;
+
 };
 #endif

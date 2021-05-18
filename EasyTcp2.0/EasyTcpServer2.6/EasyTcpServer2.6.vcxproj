@@ -18,6 +18,12 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EasyTcpServer2_6_main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyServer2_6.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{89C5E315-4ABE-47CD-988D-436C4DB9BEC0}</ProjectGuid>
@@ -157,12 +163,6 @@
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="MyServer2_6.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="EasyTcpServer2_6_main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,21 +1,20 @@
-// version2.6 优化
+// version2.5 支持命令脚本
 
 #include "MyServer2_6.hpp"
 #include "../depends/include/CellConfig.hpp"
 
 int main(int argc, char* args[])
 {
+	CellLog::Instance().setLogPath("serverLog2_6", "w");
+
 	CellConfig::Instance().Init(argc,args);
 	const char* strIP = CellConfig::Instance().getStr("strIP","any");
 	uint16_t nPort = CellConfig::Instance().getInt("nPort", 4567);
 	uint16_t nThread = CellConfig::Instance().getInt("nThread", 4);
-	uint16_t nClient = CellConfig::Instance().getInt("nClient",10000);
 
 	if (0 == strcmp("any",strIP))
 		strIP = nullptr;
 	
-
-	CellLog::Instance().setLogPath("serverLog2_5", "w");
 	MyServer server;
 	server.InitSocket();
 	server.Bind(strIP, nPort);
@@ -35,7 +34,5 @@ int main(int argc, char* args[])
 
 	CellLog_Debug("exit.");
 
-	std::chrono::milliseconds t(100);
-	std::this_thread::sleep_for(t);
 	return 0;
 }
