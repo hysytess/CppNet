@@ -2,7 +2,7 @@
 #define _PUBLICLIB_HPP_
 
 #ifdef _WIN32
-#define FD_SETSIZE      10240
+#define FD_SETSIZE      65535
 #define WIN32_LEAN_AND_MEAN
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
@@ -10,6 +10,12 @@
 #include<WinSock2.h>
 #pragma comment(lib,"ws2_32.lib")
 #else
+
+#ifdef __APPLE__
+// 解除 Mac OS 下 nfds 1024 限制
+#define _DARWIN_UNLIMITED_SELECT
+#endif // !__APPLE__
+
 #include<unistd.h> //uni std
 #include<arpa/inet.h>
 #include<string.h>

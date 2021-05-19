@@ -146,7 +146,7 @@ public:
 #endif
 		if (INVALID_SOCKET == csock)
 		{
-			CellLog_Debug("socket=<%d> error, invalid SOCKET...", (int)csock);
+			CellLog_Debug("socket=<%d> error, invalid SOCKET...error code:%d %s.", (int)csock,errno,strerror(errno));
 		}
 		else
 		{

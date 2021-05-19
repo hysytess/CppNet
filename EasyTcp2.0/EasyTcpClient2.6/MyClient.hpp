@@ -1,7 +1,7 @@
 #ifndef _MYCLIENT_HPP_
 #define _MYCLIENT_HPP_
 
-#include "../depends/include/EasyTcpClient2_3.hpp"
+#include "../depends/include/EasyTcpClient2_4.hpp"
 #include "../depends/include/CellConfig.hpp"
 
 #include <thread>

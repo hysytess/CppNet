@@ -1,7 +1,7 @@
 #ifndef _MYSERVER_HPP_
 #define _MYSERVER_HPP_
 
-#include "../depends/include/EasyTcpServer2_3.hpp"
+#include "../depends/include/EasyTcpServer2_4.hpp"
 #include "../depends/include/CellMsgStream.hpp"
 
 //应用层
@@ -45,7 +45,7 @@ public:
 			{
 				if (login->msgID != pClient->_nRecvMsgID)
 				{
-
+					CellLog_Error("socket<%d> msgID<%d> _nRecvMsgID<%d> %d", pClient->sockfd(), login->msgID, pClient->_nRecvMsgID, login->msgID - pClient->_nRecvMsgID);
 				}
 				++pClient->_nRecvMsgID;
 			}

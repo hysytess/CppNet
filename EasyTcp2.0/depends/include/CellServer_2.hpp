@@ -1,10 +1,11 @@
-#ifndef _CELLSERVER_HPP_
-#define _CELLSERVER_HPP_
+#ifndef _CELLSERVER2_HPP_
+#define _CELLSERVER2_HPP_
 
 #include "PublicLib.hpp"
 #include "INETEVENT.hpp"
 #include "ClientSocket.hpp"
 #include "CELLSemaphore.hpp"
+#include "CellFDSet.hpp"
 
 #include <vector>
 #include <map>
@@ -60,82 +61,90 @@ public:
 			}
 			if (_clients.empty())
 			{
-				std::chrono::milliseconds t(1);
-				std::this_thread::sleep_for(t);
+				CellThread::Sleep(1);
 				// 更新 心跳时间戳
 				_old_time = CELLTime::getNowInMillisec();
 				continue;
 			}
 
 			CheckTime();
-
-			fd_set fdRead;
-			fd_set fdWrite;
-			//fd_set fdExp;
-
-			if (_clients_change)
+			if (!DoSelect())
 			{
-				_clients_change = false;
-				FD_ZERO(&fdRead);
-				_maxSock = _clients.begin()->second->sockfd();
-				for (auto iter : _clients)
-				{
-					FD_SET(iter.second->sockfd(), &fdRead);
-					if (_maxSock < iter.second->sockfd())
-					{
-						_maxSock = iter.second->sockfd();
-					}
-				}
-				memcpy(&_fdRead_bak, &fdRead, sizeof(fd_set));
-			}
-			else
-			{
-				memcpy(&fdRead, &_fdRead_bak, sizeof(fd_set));
-			}
-
-			bool bNeedWrite = false;
-
-			//检测是否有可写客户端
-			FD_ZERO(&fdWrite);
-			for (auto iter : _clients )
-			{
-				if (iter.second->needWrite())
-				{
-					bNeedWrite = true;
-					FD_SET(iter.second->sockfd(),&fdWrite);
-				}
-			}
-
-			//memcpy(&fdWrite, &_fdRead_bak, sizeof(fd_set));
-			//memcpy(&fdExp, &_fdRead_bak, sizeof(fd_set));
-			 
-			timeval tv{ 0,1 };
-			int ret = 0;
-			if (bNeedWrite)
-			{
-				ret = (int)select(_maxSock + 1, &fdRead, &fdWrite, nullptr, &tv);
-			}
-			else
-			{
-				ret = (int)select(_maxSock + 1, &fdRead, nullptr, nullptr, &tv);
-			}
-			if (ret < 0)
-			{
-				CellLog_Debug("CellServer%d.OnRun.Select error...exit.", _id);
 				pThread->Exit();
 				break;
 			}
-			else if (ret == 0)
-			{
-				continue;
-			}
-
-			ReadData(fdRead);
-			WriteData(fdWrite);
-			//WriteData(fdExp);
+			DoMsg();
 		}
 		CellLog_Debug("CELLServer%d.OnRun exit", _id);
-	};
+	}
+
+	bool DoSelect()
+	{
+
+		if (_clients_change)
+		{
+			_clients_change = false;
+			_fdRead.zero();
+			_maxSock = _clients.begin()->second->sockfd();
+			for (auto iter : _clients)
+			{
+				_fdRead.add(iter.second->sockfd());
+				if (_maxSock < iter.second->sockfd())
+				{
+					_maxSock = iter.second->sockfd();
+				}
+			}
+			
+			//memcpy(_fdRead_bak.fdset(), _fdRead.fdset(), sizeof(fd_set));
+			_fdRead_bak.copy(_fdRead);
+		}
+		else
+		{
+			//memcpy(_fdRead.fdset(), _fdRead_bak.fdset(), sizeof(fd_set));
+			_fdRead.copy(_fdRead_bak);
+		}
+
+		bool bNeedWrite = false;
+
+		//检测是否有可写客户端
+		_fdWrite.zero();
+		for (auto iter : _clients)
+		{
+			if (iter.second->needWrite())
+			{
+				bNeedWrite = true;
+				_fdWrite.add(iter.second->sockfd());
+			}
+		}
+
+		//memcpy(&fdWrite, &_fdRead_bak, sizeof(fd_set));
+		//memcpy(&fdExp, &_fdRead_bak, sizeof(fd_set));
+
+		timeval tv{ 0,1 };
+		int ret = 0;
+		if (bNeedWrite)
+		{
+			ret = (int)select(_maxSock + 1, _fdRead.fdset(), _fdWrite.fdset(), nullptr, &tv);
+		}
+		else
+		{
+			ret = (int)select(_maxSock + 1, _fdRead.fdset(), nullptr, nullptr, &tv);
+		}
+		if (ret < 0)
+		{
+			CellLog_Debug("CellServer%d.OnRun.Select error...exit.", _id);
+			return false;
+		}
+		else if (ret == 0)
+		{
+			return true;
+		}
+
+		ReadData();
+		WriteData();
+		//WriteData(fdExp);
+		return true; //
+	}
 
 	// 心跳检测
 	void CheckTime()
@@ -171,13 +180,13 @@ public:
 		delete pClient;
 	}
 
-	void WriteData(fd_set& fdWrite)
+	void WriteData()
 	{
 #ifdef _WIN32
-
-		for (int n = 0; n < fdWrite.fd_count; n++)
+		auto pfdset = _fdWrite.fdset();
+		for (int n = 0; n < pfdset->fd_count; n++)
 		{
-			auto iter = _clients.find(fdWrite.fd_array[n]);
+			auto iter = _clients.find(pfdset->fd_array[n]);
 			if (iter != _clients.end())
 			{
 				if (SOCKET_ERROR == iter->second->SendDataReal())
@@ -187,11 +196,11 @@ public:
 				}
 			}
 		}
-
+		
 #else
 		for (auto iter = _clients.begin(); iter != _clients.end(); )
 		{
-			if (iter->second->needWrite() && FD_ISSET(iter->second->sockfd(), &fdWrite))
+			if (iter->second->needWrite() && _fdWrite.has(iter->second->sockfd()))
 			{
 				if (SOCKET_ERROR == iter->second->SendDataReal())
 				{
@@ -207,13 +216,13 @@ public:
 #endif
 	}
 
-	void ReadData(fd_set& fdRead)
+	void ReadData()
 	{
 #ifdef _WIN32
-
-		for (int n = 0; n < fdRead.fd_count; n++)
+		auto pfdset = _fdRead.fdset();
+		for (int n = 0; n < pfdset->fd_count; n++)
 		{
-			auto iter = _clients.find(fdRead.fd_array[n]);
+			auto iter = _clients.find(pfdset->fd_array[n]);
 			if (iter != _clients.end())
 			{
 				if (SOCKET_ERROR == RecvData(iter->second))
@@ -223,11 +232,11 @@ public:
 				}
 			}
 		}
-
+		
 #else
 		for (auto iter = _clients.begin(); iter != _clients.end(); )
 		{
-			if (FD_ISSET(iter->second->sockfd(), &fdRead))
+			if (_fdRead.has(iter->second->sockfd()))
 			{
 				if (SOCKET_ERROR == RecvData(iter->second))
 				{
@@ -241,6 +250,22 @@ public:
 			iter++;
 		}
 #endif
+	}
+
+	void DoMsg()
+	{
+		ClientSocket* pClient = nullptr;
+		for (auto iter :_clients )
+		{
+			auto pClient = iter.second;
+			while (pClient->hasMsg())
+			{
+				// 处理接收到完整的数据
+				OnNetMsg(pClient, pClient->front_msg());
+				// 移除在缓冲区队列头 已处理的数据
+				pClient->pop_front_msg();
+			}
+		}
 	}
 
 	int RecvData(ClientSocket* pClient)
@@ -255,13 +280,6 @@ public:
 		// 触发接收事件 【pClient】 对象
 		_pNetEvent->OnNetRecv(pClient);
 
-		while (pClient->hasMsg())
-		{
-			// 处理接收到完整的数据
-			OnNetMsg(pClient, pClient->front_msg());
-			// 移除在缓冲区队列头 已处理的数据
-			pClient->pop_front_msg();
-		}
 		return 0;
 	}
 
@@ -331,9 +349,14 @@ private:
 	INetEvent* _pNetEvent;
 	CellTaskServer _taskServer;
 
-	fd_set _fdRead_bak;
+	CellFDSet _fdRead_bak;
+	CellFDSet _fdRead;
+	CellFDSet _fdWrite;
+	//fd_set fdExp;
+
 	SOCKET _maxSock;
 	time_t _old_time = CELLTime::getNowInMillisec();
+
 	CellThread _cellThread;
 	int _id = -1;
 	// 有客户端加入 或者退出 集合 fd_set(fdRead) 改变

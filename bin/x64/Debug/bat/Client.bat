@@ -3,13 +3,13 @@
 @set cmd=strIP=%strIP%
 @set cmd=%cmd% nPort=4568
 @set cmd=%cmd% nThread=4
-@set cmd=%cmd% nClient=10000
+@set cmd=%cmd% nClient=2500
 @set cmd=%cmd% nMsg=100
 @set cmd=%cmd% nSendSleep=1000
 @set cmd=%cmd% nSendBuffSize=81920
 @set cmd=%cmd% nRecvBuffSize=81920
 @set cmd=%cmd% -checkMsgID
 
-EasyTcpServer2.5 %cmd%
+EasyTcpClient2.6 %cmd%
 
 pause

@@ -1,10 +1,11 @@
-#ifndef _EasyTc_pClient2_3_hpp_
-#define _EasyTc_pClient2_3_hpp_
+#ifndef _EasyTc_pClient2_4_hpp_
+#define _EasyTc_pClient2_4_hpp_
 
 #include "PublicLib.hpp"
 #include "CellNetWork.hpp"
 #include "ClientSocket.hpp"
 #include "CellLog.hpp"
+#include "CellFDSet.hpp"
 
 class EasyTcpClient
 {
@@ -34,6 +35,8 @@ public:
 		}
 		else
 		{
+			// 端口重用
+			CellNetWork::make_reuseaddr(_sock);
 			_pClient = new ClientSocket(_sock,sendSize,recvSize);
 			//CellLog_Debug("Create socket=<%d> sucess...", (int)_sock);
 		}
@@ -87,23 +90,22 @@ public:
 		if (isRun())
 		{
 			SOCKET sock = _pClient->sockfd();
-			fd_set fdReads;
-			FD_ZERO(&fdReads);
-			FD_SET(sock, &fdReads);
+			
+			_fdReads.zero();
+			_fdReads.add(sock);
 
-			fd_set fdWrite;
-			FD_ZERO(&fdWrite);
+			_fdWrite.zero();
 
 			timeval tv = { 0,microseconds };
 			int ret = 0;
 			if (_pClient->needWrite())
 			{
-				FD_SET(sock, &fdWrite);
-				ret = (int)select(sock + 1, &fdReads, &fdWrite, 0, &tv);
+				_fdWrite.add(sock);
+				ret = (int)select(sock + 1, _fdReads.fdset(), _fdWrite.fdset(), 0, &tv);
 			}
 			else
 			{
-				ret = (int)select(sock + 1, &fdReads, nullptr, nullptr, &tv);
+				ret = (int)select(sock + 1, _fdReads.fdset(), nullptr, nullptr, &tv);
 			}
 			
 			if (ret < 0)
@@ -112,10 +114,10 @@ public:
 				Close();
 				return false;
 			}
-			if (FD_ISSET(sock, &fdReads))
+			if (_fdReads.has(sock))
 			{
 				//FD_CLR(_sock, &fdReads);
-				if (-1 == RecvData(sock))
+				if (SOCKET_ERROR == RecvData(sock))
 				{
 					CellLog_Debug("<socket=%d>select done. terminal code:2", (int)sock);
 					Close();
@@ -123,10 +125,10 @@ public:
 				}
 			}
 
-			if (FD_ISSET(sock, &fdWrite))
+			if (_fdWrite.has(sock))
 			{
 				//FD_CLR(_sock, &fdReads);
-				if (-1 == _pClient->SendDataReal()) // 
+				if (SOCKET_ERROR == _pClient->SendDataReal()) // 
 				{
 					Close();
 					return false;
@@ -186,6 +188,9 @@ protected:
 
 private:
 	bool _isConnected;
+
+	CellFDSet _fdReads;
+	CellFDSet _fdWrite;
 };
 
 #endif

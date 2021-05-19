@@ -1,12 +1,13 @@
-#ifndef _EasyTcpServer2_3_hpp_
-#define _EasyTcpServer2_3_hpp_
+#ifndef _EasyTcpServer2_4_hpp_
+#define _EasyTcpServer2_4_hpp_
 
 #include "PublicLib.hpp"
 #include "ClientSocket.hpp"
-#include "CellServer.hpp"
+#include "CellServer_2.hpp"
 #include "INETEVENT.hpp"
 #include "CellNetWork.hpp"
 #include "CellConfig.hpp"
+#include "CellFDSet.hpp"
 
 #include <thread>
 #include <mutex>
@@ -73,6 +74,8 @@ public:
 		}
 		else
 		{
+			// 端口重用
+			CellNetWork::make_reuseaddr(_sock);
 			CellLog_Debug("<socket=%d> was created...", (int)_sock);
 		}
 		return _sock;
@@ -146,7 +149,7 @@ public:
 #endif
 		if (INVALID_SOCKET == csock)
 		{
-			CellLog_Debug("socket=<%d> error, invalid SOCKET...", (int)csock);
+			CellLog_Debug("socket=<%d> error, invalid SOCKET...error code:%d %s.", (int)csock,errno,strerror(errno));
 		}
 		else
 		{
@@ -241,18 +244,17 @@ public:
 private:
 	void OnRun(CellThread* pThread)
 	{
+		CellFDSet fdRead;
 		while (pThread->isRun())
 		{
 			Time4msg();
 
-			fd_set fdRead;
+			fdRead.zero();
 
-			FD_ZERO(&fdRead);
-
-			FD_SET(_sock, &fdRead);
+			fdRead.add(_sock);
 
 			timeval tv{ 0,1 };
-			int ret = (int)select(_sock + 1, &fdRead, nullptr, nullptr, &tv);
+			int ret = (int)select(_sock + 1, fdRead.fdset(), nullptr, nullptr, &tv);
 
 			if (ret < 0)
 			{
@@ -261,9 +263,9 @@ private:
 				break;
 			}
 
-			if (FD_ISSET(_sock, &fdRead))
+			if (fdRead.has(_sock))
 			{
-				FD_CLR(_sock, &fdRead);
+				//fdRead.del(_sock);
 				Accept();
 			}
 		}

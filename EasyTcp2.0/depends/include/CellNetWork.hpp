@@ -33,6 +33,17 @@ public:
 	{
 		static CellNetWork obj;
 	}
+	
+	static int make_reuseaddr(SOCKET fd)
+	{
+		int flag = 1;
+		if (SOCKET_ERROR == setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&flag, sizeof(flag)))
+		{
+			CellLog_Error("setsockopt SO_REUSEADDR fail.");
+			return SOCKET_ERROR;
+		}
+		return 1;
+	}
 };
 
 #endif
