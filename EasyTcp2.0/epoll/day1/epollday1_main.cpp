@@ -1,22 +1,13 @@
-#include <stdio.h>
-#include <cstdlib>
-#include <unistd.h> //uni std
-#include <arpa/inet.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/epoll.h>
-
 #include <vector>
 #include <thread>
 #include <algorithm>
 
 #include "MessageHeader.hpp"
+#include "CellEpoll.hpp"
 
 #define SOCKET int
 #define INVALID_SOCKET  (SOCKET)(~0)
 #define SOCKET_ERROR            (-1)
-
-#define MAX_EVENTS 256
 
 std::vector<SOCKET> g_clients;
 char g_szBuff[4096]{};
@@ -36,23 +27,6 @@ void cmdThread()
 		}
 	}
 }
-
-int cell_epoll_ctl(int epfd, int opt, SOCKET csock, uint32_t events)
-{
-    epoll_event ev;
-    ev.events = events;
-    ev.data.fd = csock;
-    if(-1 == epoll_ctl(epfd,opt,csock,&ev))
-    {
-        printf("error, epoll_ctl() socket<%d>\n",csock);
-    }
-}
-
-int cell_epoll_del(int epfd, int opt, SOCKET csock, epoll_event* events)
-{
-    epoll_ctl(epfd,opt,csock,events);   
-}
-
 
 int readData(SOCKET csock)
 {
@@ -127,22 +101,17 @@ int main(int argc,char* args[])
     // 2.6.8 后 __size 参数无意义 最大连接数取决于硬件条件
     // 最大连接数由 epoll 动态管理.
     // cat /proc/sys/fs/file-max
-    int epfd = epoll_create(MAX_EVENTS);
-
-    cell_epoll_ctl(epfd,EPOLL_CTL_ADD,sock,EPOLLIN);
+    const int maxClient = 60000;
+    CellEpoll ep;
+    ep.Create(maxClient);
+    ep.ctl(EPOLL_CTL_ADD,sock,EPOLLIN);
 
     int msgCount = 0;
-    epoll_event events[MAX_EVENTS] = {};
+
     while (g_bRun)
     {
-        int n = epoll_wait(epfd, events, MAX_EVENTS, 1/*-1 0 unlimit ms*/);
-
-        if (n < 0)
-        {
-	        printf("error epoll_wait ret=%d \n",n);
-            break;
-        }
-      
+        int n = ep.wait(1);
+        auto events = ep.events();
         for(int i = 0;i < n;i++)
         {
             if (events[i].data.fd == sock)
@@ -162,7 +131,7 @@ int main(int argc,char* args[])
                     {
                         g_clients.push_back(csock);
                         // 将客户端添加到epoll集合中 让epoll管理
-                        cell_epoll_ctl(epfd,EPOLL_CTL_ADD,csock,EPOLLIN);
+                        ep.ctl(EPOLL_CTL_ADD,csock,EPOLLIN);
 	                    printf("New client join, socket = %d, IP = %s \n", (int)csock, inet_ntoa(clientAddr.sin_addr));
                     }
                     continue;
@@ -178,12 +147,11 @@ int main(int argc,char* args[])
                 if (ret <= 0)
                 {
                     clientLeave(csock);
-                cell_epoll_ctl(epfd,EPOLL_CTL_DEL,csock,0);
                 }
                 else
                     printf("Read socket=<%d> len=%d\n",csock,ret);
                 
-                cell_epoll_ctl(epfd,EPOLL_CTL_MOD,csock,EPOLLOUT);
+                ep.ctl(EPOLL_CTL_MOD,csock,EPOLLOUT);
                     
             }
 
@@ -199,17 +167,18 @@ int main(int argc,char* args[])
                 }
                 else
                     printf("write socket=<%d> len=%d\n",csock,ret);
-                cell_epoll_ctl(epfd,EPOLL_CTL_MOD,csock,EPOLLIN);
+
+                ep.ctl(EPOLL_CTL_MOD,csock,EPOLLIN);
                 printf("EPOLLOUT|%d\n",msgCount);
             }
             
-            if (101 < msgCount )
-            {
-                for(SOCKET client : g_clients)
-                {
-                    cell_epoll_ctl(epfd,EPOLL_CTL_DEL,client,0);
-                }
-            }
+            // if (101 < msgCount )
+            // {
+            //     for(SOCKET client : g_clients)
+            //     {
+            //         cell_epoll_ctl(epfd,EPOLL_CTL_DEL,client,0);
+            //     }
+            // }
             
 
             // if (events[i].events & EPOLLERR)
@@ -224,8 +193,7 @@ int main(int argc,char* args[])
         	// 	printf("EPOLLHUP id=%d socket=%d \n", msgCount, csock);
             // }
         }   
-        
-        
+          
     }
 
     for(SOCKET client : g_clients)
@@ -233,8 +201,7 @@ int main(int argc,char* args[])
         close(client);
     }
     
-
-	close(epfd);
+    ep.destory();
     close(sock);	    
 
     printf("exit.\n");
