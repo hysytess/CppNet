@@ -1,11 +1,11 @@
 #ifndef _MYSERVER_HPP_
 #define _MYSERVER_HPP_
 
-#include "../depends/include/EasyTcpServer2_4.hpp"
+#include "../depends/include/EasyTcpServer_Select.hpp"
 #include "../depends/include/CellMsgStream.hpp"
 
 //应用层
-class MyServer :public EasyTcpServer
+class MyServer :public EasyTcpServer_Select
 {
 
 public:

@@ -19,6 +19,7 @@ int main(int argc, char* args[])
 	server.InitSocket();
 	server.Bind(strIP, nPort);
 	server.Listen(64);
+	//server.Start<EasyTcpServer_Select>(nThread);
 	server.Start(nThread);
 
 	while (true)

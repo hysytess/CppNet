@@ -183,13 +183,12 @@ public:
 		}
 		pMinServer->addClient(pClient);
 	}
-	template<class ServerT>
+
 	void Start(int nCellServer)
 	{
 		for (int n = 0; n < nCellServer; n++)
 		{
-			auto ser = new ServerT();
-			ser->setID(n + 1);
+			auto ser = new CellServer(n + 1);
 			_cellServers.push_back(ser);
 			// 注册网络事件接受对象
 			ser->setEventObj(this);
@@ -242,8 +241,35 @@ public:
 		_recvCount++;
 	}
 
-protected:
-	virtual void OnRun(CellThread* pThread) = 0;
+private:
+	void OnRun(CellThread* pThread)
+	{
+		CellFDSet fdRead;
+		while (pThread->isRun())
+		{
+			Time4msg();
+
+			fdRead.zero();
+
+			fdRead.add(_sock);
+
+			timeval tv{ 0,1 };
+			int ret = (int)select(_sock + 1, fdRead.fdset(), nullptr, nullptr, &tv);
+
+			if (ret < 0)
+			{
+				CellLog_Debug("EasyTcpServer.accept.select exit.");
+				pThread->Exit();
+				break;
+			}
+
+			if (fdRead.has(_sock))
+			{
+				//fdRead.del(_sock);
+				Accept();
+			}
+		}
+	}
 
 	void Time4msg()
 	{
@@ -255,11 +281,6 @@ protected:
 			_msgCount = 0;
 			_tTime.update();
 		}
-	}
-
-	SOCKET sockfd()
-	{
-		return _sock;
 	}
 };
 
