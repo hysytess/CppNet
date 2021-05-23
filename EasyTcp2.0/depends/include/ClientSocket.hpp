@@ -6,6 +6,7 @@
 #define CLIENT_SEND_BUFF_TIME 200 // ms
 
 #include "CellMsgBuffer.hpp"
+#include "CellNetWork.hpp"
 
 //客户端数据类型
 class ClientSocket
@@ -32,11 +33,7 @@ public:
 		//CellLog_Debug("s=%d CellClient%d closed.code:1",serverId, id);
 		if (INVALID_SOCKET != _sockfd)
 		{
-#ifdef _WIN32
-			closesocket(_sockfd);
-#else
-			close(_sockfd);
-#endif
+			CellNetWork::destorySocket(_sockfd);
 			_sockfd = INVALID_SOCKET;
 		}
 	}

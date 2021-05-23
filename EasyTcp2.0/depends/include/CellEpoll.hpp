@@ -39,7 +39,7 @@ void destory()
 {
     if (_epfd > 0)
     {
-        close(_epfd);
+		CellNetWork::destorySocket(_epfd);
         _epfd = -1;
     }
 

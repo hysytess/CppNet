@@ -1,5 +1,6 @@
 #ifndef _CellServer_Epoll_HPP_
 #define _CellServer_Epoll_HPP_
+#if __linux__
 
 #include "CellServer_2.hpp"
 #include "CellEpoll.hpp"
@@ -92,4 +93,5 @@ private:
 	CellEpoll _ep;
 };
 
+#endif // !__linux__
 #endif

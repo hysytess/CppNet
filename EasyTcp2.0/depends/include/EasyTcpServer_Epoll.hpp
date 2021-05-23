@@ -1,5 +1,6 @@
 #ifndef _EasyTcpServer_Epoll_hpp_
 #define _EasyTcpServer_Epoll_hpp_
+#if __linux__
 
 #include "CellServer_Epoll.hpp"
 #include "EasyTcpServer2_4.hpp"
@@ -48,4 +49,5 @@ protected:
 
 };
 
+#endif //!__linux__
 #endif

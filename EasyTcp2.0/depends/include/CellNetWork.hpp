@@ -44,6 +44,20 @@ public:
 		}
 		return 1;
 	}
+
+	static int destorySocket(SOCKET sockfd)
+	{
+		int ret = 0;
+#ifdef _WIN32
+		ret = closesocket(sockfd);
+#else
+		ret = close(sockfd);
+#endif
+		if (ret < 0)
+			CellLog_PError("destory socket<%d>",sockfd);
+		return ret;
+	}
+
 };
 
 #endif

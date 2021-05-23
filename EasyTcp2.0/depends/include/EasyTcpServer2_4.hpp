@@ -110,11 +110,12 @@ public:
 			_sin.sin_addr.s_addr = INADDR_ANY;
 		}
 #endif
+#if __linux__
 		int opt = 1;
 		unsigned int len = sizeof(opt);
 		setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR, &opt, len);
 		setsockopt(_sock, SOL_SOCKET, SO_KEEPALIVE, &opt, len);
-		
+#endif
 		int ret = bind(_sock, (sockaddr*)&_sin, sizeof(_sin));
 		if (SOCKET_ERROR == ret)
 		{
@@ -164,11 +165,7 @@ public:
 			}
 			else
 			{
-#ifdef _WIN32
-				closesocket(csock);
-#else
-				close(csock);
-#endif // _WIN32
+				CellNetWork::destorySocket(csock);
 				CellLog_Warring("Accept to nMaxClient");
 			}
 			//client ip: inet_ntoa(clientAddr.sin_addr);
@@ -216,11 +213,9 @@ public:
 				delete s;
 			}
 			_cellServers.clear();
-#ifdef _WIN32
-			closesocket(_sock);
-#else
-			close(_sock);
-#endif
+
+			CellNetWork::destorySocket(_sock);
+
 			_sock = INVALID_SOCKET;
 		}
 		CellLog_Debug("Server2.2 closed.code:2");
