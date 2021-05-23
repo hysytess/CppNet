@@ -38,8 +38,12 @@ public:
 		int ret = _ep.wait(1);
 		if(ret < 0)
 		{
-			return false;
+			if (errno == EINTR)
+				return true;
+			
 			perror("CellServer_Epoll.OnRun.Wait Eorr exit");
+			return false;
+
 		}
 		else if(ret == 0)
 			return true;

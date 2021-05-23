@@ -27,6 +27,9 @@ protected:
 			int ret = ep.wait(1);
 			if (ret < 0)
 			{
+				if (errno == EINTR)
+					continue;
+
 				CellLog_Debug("EasyTcpServer.accept.epoll exit.");
 				pThread->Exit();
 				break;

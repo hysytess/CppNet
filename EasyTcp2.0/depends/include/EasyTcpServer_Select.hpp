@@ -29,6 +29,9 @@ protected:
 
 			if (ret < 0)
 			{
+				if (errno == EINTR)
+					continue;
+
 				CellLog_Debug("EasyTcpServer.accept.select exit.");
 				pThread->Exit();
 				break;

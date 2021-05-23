@@ -68,6 +68,9 @@ public:
 		}
 		if (ret < 0)
 		{
+			if (errno == EINTR)
+				return true;
+
 			CellLog_Debug("CellServer_Select%d.OnRun.Select error...exit.", _id);
 			return false;
 		}

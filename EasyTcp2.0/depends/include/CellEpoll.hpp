@@ -83,8 +83,14 @@ int wait(int time_out)
 {
     int ret = epoll_wait(_epfd, _pEvents, _nMaxEvents, time_out/*-1 0 unlimit ms*/);
 
-    if (EPOLL_ERROR == ret)
-        perror("epoll_wait()");
+	if (EPOLL_ERROR == ret) 
+	{
+		if (errno == EINTR)
+			return 1;
+
+		perror("epoll_wait()");
+
+	}
     return ret;
 }
 
