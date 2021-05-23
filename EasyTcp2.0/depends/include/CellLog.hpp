@@ -96,8 +96,32 @@ public:
 	template<typename ...Args>
 	static void PError(const char* pformat, Args ... args)
 	{
-		Echo("###PError ", pformat, args...);
-		Echo("###PError ", "errno<%d>,errmsg<%s>", errno, strerror(errno));
+#ifdef _WIN32
+		auto errCode = GetLastError();
+
+		Instance()._taskServer.addTask([=]() {
+			static char text[256]{};
+			FormatMessageA(
+				FORMAT_MESSAGE_FROM_SYSTEM,
+				NULL,
+				errCode,
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+				(LPSTR)&text, 256, nullptr
+			);
+
+			EchoReal(true, "###PError ", pformat, args...);
+			EchoReal(false, "###PError ", "errno=%d,errmsg=%s", errCode, text);
+		});
+		
+#else
+		auto errCode = errno;
+
+		Instance()._taskServer.addTask([=]() {
+			EchoReal(true, "###PError ", pformat, args...);
+			EchoReal(false, "###PError ", "errno=%d,errmsg=%s", errCode, strerror(errCode));
+	});
+#endif
+	
 	}
 
 	static void Error(const char* pStr)
@@ -149,22 +173,34 @@ public:
 	{
 		CellLog* pLog = &Instance();
 		pLog->_taskServer.addTask([=]() {
-			if (pLog->_logFile)
-			{
-				std::time_t t = std::time(nullptr);
-				std::tm* now = std::localtime(&t);
-				int mon = now->tm_mon + 1;
-				if (mon > 12)
-					mon = 1;
-				fprintf(pLog->_logFile, "%s", type);
-				fprintf(pLog->_logFile, "[%d-%d-%d %d:%d:%d]", now->tm_year + 1900, mon, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
-				fprintf(pLog->_logFile, pformat, args...);
-				fprintf(pLog->_logFile, "%s", "\n");
-				fflush(pLog->_logFile);
-			}
-			printf(pformat, args...);
-			printf("%s", "\n");
+			EchoReal(true, type, pformat, args...);
 		});
+
+	}
+
+	template<typename ...Args>
+	static void EchoReal(bool br,const char* type, const char* pformat, Args ... args)
+	{
+		CellLog* pLog = &Instance();
+		if (pLog->_logFile)
+		{
+			std::time_t t = std::time(nullptr);
+			std::tm* now = std::localtime(&t);
+			int mon = now->tm_mon + 1;
+			if (mon > 12)
+				mon = 1;
+			if (type)
+				fprintf(pLog->_logFile, "%s", type);
+			
+			fprintf(pLog->_logFile, "[%d-%d-%d %d:%d:%d]", now->tm_year + 1900, mon, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
+			fprintf(pLog->_logFile, pformat, args...);
+			
+			if (br)
+				fprintf(pLog->_logFile, "%s", "\n");
+			fflush(pLog->_logFile);
+		}
+		printf(pformat, args...);
+		printf("%s", "\n");
 
 	}
 
