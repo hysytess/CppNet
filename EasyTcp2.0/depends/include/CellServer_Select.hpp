@@ -4,14 +4,15 @@
 #include "CellServer_2.hpp"
 #include "CellFDSet.hpp"
 
-#include <vector>
-#include <map>
-
 // 网络消息接受服务
 class CellServer_Select:public CellServer
 {
 
 public:
+	~CellServer_Select()
+	{
+		Close();
+	}
 
 	bool DoNetEvent()
 	{

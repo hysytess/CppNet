@@ -16,7 +16,7 @@ class CellServer
 
 public:
 
-	~CellServer()
+	virtual ~CellServer()
 	{
 		CellLog_Debug("CellServer%d.~CellServer exit.code:1", _id);
 		Close();
@@ -57,6 +57,7 @@ public:
 					pClient->serverId = _id;
 					if (_pNetEvent)
 						_pNetEvent->OnNetJoin(pClient);
+					onClientJoin(pClient);
 				}
 				_clientsBuff.clear();
 				_clients_change = true;
@@ -80,6 +81,7 @@ public:
 		CellLog_Debug("CELLServer%d.OnRun exit", _id);
 	}
 
+	// 基类
 	virtual bool DoNetEvent() = 0;
 
 	// 心跳检测
@@ -115,6 +117,8 @@ public:
 		_clients_change = true;
 		delete pClient;
 	}
+
+	virtual void onClientJoin(ClientSocket* pClient){}
 
 	void DoMsg()
 	{

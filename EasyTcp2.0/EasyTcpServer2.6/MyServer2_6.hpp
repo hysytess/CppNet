@@ -1,6 +1,7 @@
 #ifndef _MYSERVER_HPP_
 #define _MYSERVER_HPP_
 
+#include "../depends/include/EasyTcpServer_Epoll.hpp"
 #include "../depends/include/EasyTcpServer_Select.hpp"
 #include "../depends/include/CellMsgStream.hpp"
 

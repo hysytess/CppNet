@@ -28,6 +28,7 @@ class CellLog
 #define CellLog_Info(...) CellLog::Info(__VA_ARGS__)
 #define CellLog_Warring(...) CellLog::Warring(__VA_ARGS__)
 #define CellLog_Error(...) CellLog::Error(__VA_ARGS__)
+#define CellLog_PError(...) CellLog::PError(__VA_ARGS__)
 
 
 private:
@@ -87,6 +88,18 @@ public:
 		}
 	}
 	
+	static void PError(const char* pStr)
+	{
+		PError("%s", pStr);
+	}
+
+	template<typename ...Args>
+	static void PError(const char* pformat, Args ... args)
+	{
+		Echo("###PError ", pformat, args...);
+		Echo("###PError ", "errno<%d>,errmsg<%s>", errno, strerror(errno));
+	}
+
 	static void Error(const char* pStr)
 	{
 		Error("%s", pStr);

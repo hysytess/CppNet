@@ -110,6 +110,11 @@ public:
 			_sin.sin_addr.s_addr = INADDR_ANY;
 		}
 #endif
+		int opt = 1;
+		unsigned int len = sizeof(opt);
+		setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR, &opt, len);
+		setsockopt(_sock, SOL_SOCKET, SO_KEEPALIVE, &opt, len);
+		
 		int ret = bind(_sock, (sockaddr*)&_sin, sizeof(_sin));
 		if (SOCKET_ERROR == ret)
 		{

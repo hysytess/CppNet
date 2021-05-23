@@ -3,20 +3,8 @@
 
 #if __linux__
 
-#include <stdio.h>
-#include <cstdlib>
-#include <unistd.h> //uni std
-#include <arpa/inet.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/epoll.h>
-
-#define SOCKET int
-#define INVALID_SOCKET  (SOCKET)(~0)
-#define SOCKET_ERROR            (-1)
-#define EPOLL_ERROR             (-1)
-
-#define MAX_EVENTS 256
+#include "PublicLib.hpp"
+#include "ClientSocket.hpp"
 
 class CellEpoll
 {    
@@ -27,7 +15,7 @@ public:
     destory();
 }
 
-int Create(int nMaxEvents = MAX_EVENTS)
+int Create(int nMaxEvents = 256)
 {
     // 2.6.8 后 __size 参数无意义 最大连接数取决于硬件条件
     // 最大连接数由 epoll 动态管理.
@@ -71,7 +59,21 @@ int ctl(int opt, SOCKET csock, uint32_t events)
     int ret = epoll_ctl(_epfd,opt,csock,&ev);
     if(EPOLL_ERROR == ret)
     {
-        perror("epoll_ctl()");\
+        perror("epoll_ctl()");
+        return ret;
+    }
+    return ret;
+}
+
+int ctl(int opt, ClientSocket* pClient, uint32_t events)
+{
+    epoll_event ev;
+    ev.events = events;
+    ev.data.ptr = pClient;
+    int ret = epoll_ctl(_epfd,opt,pClient->sockfd(),&ev);
+    if(EPOLL_ERROR == ret)
+    {
+        perror("epoll_ctl()");
         return ret;
     }
     return ret;

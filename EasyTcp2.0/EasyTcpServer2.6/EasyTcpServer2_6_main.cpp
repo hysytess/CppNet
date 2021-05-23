@@ -14,7 +14,8 @@ int main(int argc, char* args[])
 
 	if (0 == strcmp("any",strIP))
 		strIP = nullptr;
-	
+
+
 	MyServer server;
 	server.InitSocket();
 	server.Bind(strIP, nPort);

@@ -20,10 +20,12 @@
 #include<arpa/inet.h>
 #include<string.h>
 #include <signal.h>
+#include <sys/epoll.h>
 
 #define SOCKET int
 #define INVALID_SOCKET  (SOCKET)(~0)
 #define SOCKET_ERROR            (-1)
+#define EPOLL_ERROR             (-1)
 #endif
 
 //缓冲区最小单元大小
