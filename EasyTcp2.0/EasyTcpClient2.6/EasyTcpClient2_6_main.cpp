@@ -1,7 +1,7 @@
 // version2.6 支持命令行脚本 性能优化
 
 #include "MyClient.hpp"
-#include "CellThread.hpp"
+#include "../depends/include/CellThread.hpp"
 
 void WorkThread(CellThread* pThread, int id)
 {

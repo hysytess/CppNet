@@ -39,6 +39,7 @@ public:
 			CellNetWork::make_reuseaddr(_sock);
 			_pClient = new ClientSocket(_sock,sendSize,recvSize);
 			//CellLog_Debug("Create socket=<%d> sucess...", (int)_sock);
+			OnInitSocket();
 		}
 		return _sock;
 	}
@@ -70,12 +71,13 @@ public:
 		else
 		{
 			_isConnected = true;
+			OnConnect();
 			//CellLog_Debug("<socket=%d> connect to host<%s:%d> sucess.", (int)_sock, ip, port);
 		}
 		return ret;
 	}
 
-	void Close()
+	virtual void Close()
 	{
 		if (_pClient)
 		{
@@ -85,67 +87,14 @@ public:
 		_isConnected = false;
 	}
 
-	bool OnRun(int microseconds = 1)
-	{
-		if (isRun())
-		{
-			SOCKET sock = _pClient->sockfd();
-			
-			_fdReads.zero();
-			_fdReads.add(sock);
-
-			_fdWrite.zero();
-
-			timeval tv = { 0,microseconds };
-			int ret = 0;
-			if (_pClient->needWrite())
-			{
-				_fdWrite.add(sock);
-				ret = (int)select(sock + 1, _fdReads.fdset(), _fdWrite.fdset(), 0, &tv);
-			}
-			else
-			{
-				ret = (int)select(sock + 1, _fdReads.fdset(), nullptr, nullptr, &tv);
-			}
-			
-			if (ret < 0)
-			{
-				CellLog_Debug("<socket=%d>select done. terminal code:1", (int)sock);
-				Close();
-				return false;
-			}
-			if (_fdReads.has(sock))
-			{
-				//FD_CLR(_sock, &fdReads);
-				if (SOCKET_ERROR == RecvData(sock))
-				{
-					CellLog_Debug("<socket=%d>select done. terminal code:2", (int)sock);
-					Close();
-					return false;
-				}
-			}
-
-			if (_fdWrite.has(sock))
-			{
-				//FD_CLR(_sock, &fdReads);
-				if (SOCKET_ERROR == _pClient->SendDataReal()) // 
-				{
-					Close();
-					return false;
-				}
-			}
-
-			return true;
-		}
-		return false;
-	}
+	virtual bool OnRun(int microseconds = 1)  = 0;
 
 	bool isRun()
 	{
 		return _pClient && _isConnected;
 	}
 
-	int RecvData(SOCKET csock)
+	int RecvData()
 	{
 		if (isRun())
 		{
@@ -182,6 +131,10 @@ public:
 			return _pClient->SendData(pData, len);
 		return 0;
 	}
+
+protected:
+	virtual void OnInitSocket() {};
+	virtual void OnConnect() {};
 
 protected:
 	ClientSocket* _pClient = nullptr;
