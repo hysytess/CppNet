@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 	{
 		client.OnRun();
 		client.SendData(byteStream.data(), byteStream.length());
-		CellThread::Sleep(10);
+		CellThread::Sleep(500);
 	}
 
 	return 0;

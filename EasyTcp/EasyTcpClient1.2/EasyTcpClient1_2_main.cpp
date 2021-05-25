@@ -6,7 +6,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <WinSock2.h>
-#ifndef _WIN32 // WinSocket 动态库
+#ifndef _WIN32 // WinSocket 鍔ㄦ�佸簱
 #pragma comment(lib,"ws2_32.lib")
 #endif
 
@@ -17,7 +17,7 @@ using namespace std;
 int main(int argc, char** argv) {
 	WORD ver = MAKEWORD(2, 2);
 	WSADATA dat;
-	WSAStartup(ver, &dat); // 启动Windows 网络环境
+	WSAStartup(ver, &dat); // 鍚姩Windows 缃戠粶鐜
 
 	// frist build a socket
 	// ipv4/6 stream tcp/udp
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 	// the second connect to server;
 	sockaddr_in _sin{};
 	_sin.sin_family = AF_INET;
-	_sin.sin_port = htons(233);
+	_sin.sin_port = htons(4567);
 	_sin.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 	int ret = connect(_sock, (sockaddr *)&_sin, sizeof(sockaddr_in));
 	if (ret == SOCKET_ERROR)

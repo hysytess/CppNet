@@ -1,4 +1,4 @@
-// 引入 Select 模型 支持一对多
+// 寮曞叆 Select 妯″瀷 鏀寔涓�瀵瑰
 
 #include <iostream>
 #include <cstdlib>
@@ -8,7 +8,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <WinSock2.h>
-#ifndef _WIN32 // WinSocket 动态库
+#ifndef _WIN32 // WinSocket 鍔ㄦ�佸簱
 #pragma comment(lib,"ws2_32.lib")
 #endif
 
@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 	SOCKET _sock = CreateSocket();
 
 	char ip[16] = "127.0.0.1";
-	if (!ConnectToHost(ip, 233, _sock));
+	if (!ConnectToHost(ip, 4567, _sock));
 	else return 0;
 
 	// the third receive from server message
@@ -56,6 +56,7 @@ int main(int argc, char** argv) {
 		Message facebackmsg;
 		strcpy(facebackmsg.msg, "hello!,i'm client.");
 		send(_sock, (char*)&facebackmsg, sizeof(Message), 0);
+		Sleep(1000);
 		// Select space ... deal some business
 	}
 
@@ -130,8 +131,8 @@ int processor(SOCKET _cSock) {
 int InitNetwork(int hibyte, int lobyte) {
 	WORD ver = MAKEWORD(hibyte, lobyte);
 	WSADATA dat;
-	WSAStartup(ver, &dat); // 启动Windows 网络环境
-	int err = WSAStartup(ver, &dat); // 启动Windows 网络环境
+	WSAStartup(ver, &dat); // 鍚姩Windows 缃戠粶鐜
+	int err = WSAStartup(ver, &dat); // 鍚姩Windows 缃戠粶鐜
 	if (err != 0)
 	{
 		return 1;
