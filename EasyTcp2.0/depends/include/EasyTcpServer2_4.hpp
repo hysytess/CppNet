@@ -23,15 +23,14 @@ private:
 	CELLTimestamp _tTime;
 	SOCKET _sock;
 
+protected:
 	int _nSendBuffSize;
 	int _nRecvBuffSize;
 	int _nMaxClient;
 
-protected:
 	std::atomic_int _recvCount;
 	std::atomic_int _msgCount;
 	std::atomic_int _clientCount;
-
 public:
 
 	EasyTcpServer()

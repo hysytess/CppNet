@@ -3,6 +3,12 @@
 
 #include "PublicLib.hpp"
 
+
+#ifdef CELL_USE_IOCP
+#include "CellIOCP.hpp"
+#endif // CELL_USE_IOCP
+
+
 class CellBuffer
 {
 public:
@@ -31,10 +37,21 @@ public:
 		return _nSize;
 	}
 
-	char * data()
+	inline char * data()
 	{
 		return _pBuff;
 	}
+
+	inline int buffSize()
+	{
+		return _nSize;
+	}
+
+	inline int dataLen()
+	{
+		return _nLast;
+	}
+
 
 	bool push(const char* pData, int nLen)
 	{
@@ -136,10 +153,38 @@ public:
 		return false;
 	}
 
-	bool needWrite()
+	inline bool needWrite()
 	{
 		return _nLast > 0;
 	}
+	
+#ifdef CELL_USE_IOCP
+	IO_DATA_BASE* makeRecvIOData(SOCKET sockfd)
+	{
+
+		int nLen = _nSize - _nLast;
+		if (nLen > 0)
+		{
+			_ioData.wsBuff.buf = _pBuff + _nLast;
+			_ioData.wsBuff.len = nLen;
+			_ioData.sockfd = sockfd;
+			return &_ioData;
+		}
+		return nullptr;
+	}
+
+	bool read4iocp(int nRecv)
+	{
+		if (_nSize - _nLast >= nRecv)
+		{
+			_nLast += nRecv;
+			return true;
+		}
+		return false;
+	}
+#endif // CELL_USE_IOCP
+
+
 private:
 	//第二缓冲区
 	char* _pBuff = nullptr;
@@ -149,6 +194,10 @@ private:
 	int _nSize = 0;
 	// 缓冲区溢满计数
 	int _buffFullCount = 0;
+
+#ifdef CELL_USE_IOCP
+	IO_DATA_BASE _ioData = {};
+#endif // CELL_USE_IOCP
 };
 
 #endif

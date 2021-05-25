@@ -129,6 +129,17 @@ public:
 		}
 		return false;
 	}
+#ifdef CELL_USE_IOCP
+	inline IO_DATA_BASE* makeRecvIOData()
+	{
+		return _recvBuff.makeRecvIOData(_sockfd);
+	}
+	void recv4IOCP(int nRecv)
+	{
+		_recvBuff.read4iocp(nRecv);
+	}
+#endif // CELL_USE_IOCP
+
 private:
 	// socket fd_set  file desc set
 	SOCKET _sockfd;
@@ -143,6 +154,8 @@ private:
 	time_t _dtSend;
 	// 发送缓冲区溢满计数
 	int _sendBuffFullCount = 0;
+
+
 };
 
 #endif // !_CLIENT_SOCKET_HPP_

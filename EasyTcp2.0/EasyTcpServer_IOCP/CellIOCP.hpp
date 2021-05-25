@@ -19,7 +19,7 @@ enum IO_TYPE
 	TYPE_SEND
 };
 
-//#define IOCP_DATA_BUFF_SIZE 1024
+#define IOCP_DATA_BUFF_SIZE 1024
 struct IO_DATA_BASE
 {
 	//重叠体
@@ -27,19 +27,17 @@ struct IO_DATA_BASE
 	//
 	SOCKET sockfd;
 	//数据缓冲区
-	WSABUF wsBuff;
+	char buffer[IOCP_DATA_BUFF_SIZE];
+	//实际缓冲区数据长度
+	int length;
 	//操作类型
 	IO_TYPE iotype;
 };
 
 struct IOCP_EVENT
 {
-	union
-	{
-		void* ptr;
-		SOCKET fd;
-	}data;
 	IO_DATA_BASE* pIOData;
+	SOCKET cSock = INVALID_SOCKET;
 	DWORD bytesTrans = 0;
 };
 
@@ -83,17 +81,6 @@ public:
 		return true;
 	}
 
-	bool reg(SOCKET sockfd, void* ptr)
-	{
-		HANDLE ret = CreateIoCompletionPort((HANDLE)sockfd, _completionPort, (ULONG_PTR)ptr, 0);
-		if (NULL == ret)
-		{
-			printf("CreateIoCompletionPort fail with error %d\n", GetLastError());
-			return false;
-		}
-		return true;
-	}
-
 	//向IOCP投递接受连接任务
 	void postAccept(IO_DATA_BASE* pIO_DATA)
 	{
@@ -105,7 +92,7 @@ public:
 		if (FALSE == _lpfnAcceptEx(
 			_sockServer,
 			pIO_DATA->sockfd,
-			pIO_DATA->wsBuff.buf,
+			pIO_DATA->buffer,
 			0,
 			sizeof(sockaddr_in) + 16,
 			sizeof(sockaddr_in) + 16,
@@ -123,15 +110,18 @@ public:
 	}
 
 	//向IOCP投递接收数据任务
-	bool postRecv(IO_DATA_BASE* pIO_DATA)
+	void postRecv(IO_DATA_BASE* pIO_DATA)
 	{
 		pIO_DATA->iotype = IO_TYPE::TYPE_RECV;
+		WSABUF wsBuff = {};
+		wsBuff.buf = pIO_DATA->buffer;
+		wsBuff.len = IOCP_DATA_BUFF_SIZE;
 		DWORD flags = 0;
 		ZeroMemory(&pIO_DATA->overlapped, sizeof(OVERLAPPED));
 
 		if (SOCKET_ERROR == WSARecv(
 			pIO_DATA->sockfd,
-			&pIO_DATA->wsBuff,
+			&wsBuff,
 			1,
 			NULL,
 			&flags,
@@ -142,27 +132,25 @@ public:
 			int err = WSAGetLastError();
 			if (ERROR_IO_PENDING != err)
 			{
-				if (WSAECONNRESET == err)
-					return false;
-
 				printf("WSARecv() fail. errno:%d\n", err);
-				return false;
+				return;
 			}
 		}
-		return true;
 	}
 
 	//向IOCP投递发送数据任务
 	void postSend(IO_DATA_BASE* pIO_DATA)
 	{
 		pIO_DATA->iotype = IO_TYPE::TYPE_SEND;
-
+		WSABUF wsBuff = {};
+		wsBuff.buf = pIO_DATA->buffer;
+		wsBuff.len = pIO_DATA->length;
 		DWORD flags = 0;
 		ZeroMemory(&pIO_DATA->overlapped, sizeof(OVERLAPPED));
 
 		if (SOCKET_ERROR == WSASend(
 			pIO_DATA->sockfd,
-			&pIO_DATA->wsBuff,
+			&wsBuff,
 			1,
 			NULL,
 			flags,
@@ -183,12 +171,12 @@ public:
 	{
 		ev.bytesTrans = 0;
 		ev.pIOData = NULL;
-		ev.data.ptr = NULL;
+		ev.cSock = INVALID_SOCKET;
 
 		if (FALSE == GetQueuedCompletionStatus(
 			_completionPort,
 			&ev.bytesTrans,
-			(PULONG_PTR)&ev.data,
+			(PULONG_PTR)&ev.cSock,
 			(LPOVERLAPPED*)&ev.pIOData,
 			timeout
 		))
