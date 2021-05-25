@@ -1,137 +1,8 @@
-#define WIN32_LEAN_AND_MEAN
 
-#include<windows.h>
-#include<WinSock2.h>
-#pragma comment(lib,"ws2_32.lib")
+#include "../depends/include/CellIOCP.hpp"
 
-#include<mswsock.h>
 
-#include<stdio.h>
-
-// 提前加载 AcceptEx 到内存中 
-LPFN_ACCEPTEX lpfnAcceptEx = NULL;
-
-void loadAcceptEx(SOCKET ListenSocket)
-{
-	DWORD dwBytes = 0;
-	GUID GuidAcceptEx = WSAID_ACCEPTEX;
-
-	int iResult = WSAIoctl(ListenSocket, SIO_GET_EXTENSION_FUNCTION_POINTER,
-		&GuidAcceptEx, sizeof(GuidAcceptEx),
-		&lpfnAcceptEx, sizeof(lpfnAcceptEx),
-		&dwBytes, NULL, NULL);
-	if (iResult == SOCKET_ERROR) 
-	{
-		printf("WSAIoctl failed with error: %u\n", WSAGetLastError());
-	}
-}
-
-#define  nClient 10
-enum IO_TYPE
-{
-	TYPE_ACCEPT = 10,
-	TYPE_RECV,
-	TYPE_SEND
-};
-
-#define DATA_BUFF_SIZE 1024
-struct IO_DATA_BASE
-{
-	//重叠体
-	OVERLAPPED overlapped;
-	//
-	SOCKET sockfd;
-	//数据缓冲区
-	char buffer[DATA_BUFF_SIZE];
-	//实际缓冲区数据长度
-	int length;
-	//操作类型
-	IO_TYPE iotype;
-};
-
-//向IOCP投递接受连接任务
-int postAccept(SOCKET sockServer, IO_DATA_BASE* pIO_DATA)
-{
-	pIO_DATA->iotype = IO_TYPE::TYPE_ACCEPT;
-	pIO_DATA->sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (FALSE == lpfnAcceptEx(
-		sockServer,
-		pIO_DATA->sockfd,
-		pIO_DATA->buffer,
-		0,
-		sizeof(sockaddr_in) + 16,
-		sizeof(sockaddr_in) + 16,
-		NULL,
-		&pIO_DATA->overlapped
-	))
-	{
-		int err = WSAGetLastError();
-		if (ERROR_IO_PENDING != err)
-		{
-			printf("AcceptEx() fail errno:%d\n", err);
-			return -1;
-		}
-	}
-	return 0;
-}
-//向IOCP投递接收数据任务
-int postRecv(IO_DATA_BASE* pIO_DATA)
-{
-	pIO_DATA->iotype = IO_TYPE::TYPE_RECV;
-	WSABUF wsBuff = {};
-	wsBuff.buf = pIO_DATA->buffer;
-	wsBuff.len = DATA_BUFF_SIZE;
-	DWORD flags = 0;
-	ZeroMemory(&pIO_DATA->overlapped, sizeof(OVERLAPPED));
-
-	if (SOCKET_ERROR == WSARecv(
-		pIO_DATA->sockfd,
-		&wsBuff,
-		1,
-		NULL,
-		&flags,
-		&pIO_DATA->overlapped,
-		NULL
-	))
-	{
-		int err = WSAGetLastError();
-		if (ERROR_IO_PENDING != err)
-		{
-			printf("WSARecv() fail. errno:%d\n", err);
-			return -1;
-		}
-	}
-	return 0;
-}
-//向IOCP投递发送数据任务
-int postSend(IO_DATA_BASE* pIO_DATA)
-{
-	pIO_DATA->iotype = IO_TYPE::TYPE_SEND;
-	WSABUF wsBuff = {};
-	wsBuff.buf = pIO_DATA->buffer;
-	wsBuff.len = pIO_DATA->length;
-	DWORD flags = 0;
-	ZeroMemory(&pIO_DATA->overlapped, sizeof(OVERLAPPED));
-
-	if (SOCKET_ERROR == WSASend(
-		pIO_DATA->sockfd,
-		&wsBuff,
-		1,
-		NULL,
-		flags,
-		&pIO_DATA->overlapped,
-		NULL
-	))
-	{
-		int err = WSAGetLastError();
-		if (ERROR_IO_PENDING != err)
-		{
-			printf("WSASend() fail. errno:%d\n", err);
-			return -1;
-		}
-	}
-	return 0;
-}
+#define nClient 10
 
 int main(int argc, char* args[])
 {
@@ -188,96 +59,71 @@ int main(int argc, char* args[])
 
 	//---------------------------IOCP--------------------------//
 	// 创建完成端口IOCP
-	HANDLE _completionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE,NULL,0,0);
-	if (NULL == _completionPort)
-	{
-		printf("CreateIoCompletionPort fail with error %d\n", GetLastError());
-		return -1;
-	}
+	CellIOCP iocp;
+	iocp.Create();
 
 	// 关联IOCP、socket //ULONG_PTR:兼容64、32位 DWORD只支持32位
-	HANDLE ret = CreateIoCompletionPort((HANDLE)sockServer, _completionPort, (ULONG_PTR)sockServer, 0);
-	if (NULL == ret)
-	{
-		printf("CreateIoCompletionPort fail with error %d\n", GetLastError());
-		return -1;
-	}
+	iocp.reg(sockServer);
 
 	// 向IOCP投递接受连接任务
-	loadAcceptEx(sockServer);
+	iocp.loadAcceptEx(sockServer);
+
 	IO_DATA_BASE ioData[nClient] = {};
 	for (int n = 0; n < nClient; n++)
 	{
-		postAccept(sockServer, &ioData[n]);
+		iocp.postAccept(&ioData[n]);
 	}
 
+	IOCP_EVENT ioEvent = {};
 	int msgCount = 0;
 	while (true)
 	{
-		DWORD bytesTrans = 0;
-		SOCKET cSock = INVALID_SOCKET;
-		IO_DATA_BASE* pIOData;
-		
-		if(FALSE == GetQueuedCompletionStatus(
-			_completionPort,
-			&bytesTrans,
-			(PULONG_PTR)&cSock,
-			(LPOVERLAPPED*)&pIOData,
-			1000
-		))
-		{
-			int err = GetLastError();
-			if(WAIT_TIMEOUT == err)
-				continue;
-
-			if (ERROR_NETNAME_DELETED == err)
-			{
-				printf("closesocket %d.\n", (int)pIOData->sockfd);
-				closesocket(pIOData->sockfd);
-				continue;
-			}
-			printf("GetQueuedCompletionStatus:Overlapped I/O operation is in progress. errno:%d\n", GetLastError());
+		int retwait = iocp.wait(ioEvent, 1);
+		if (retwait < 0)
 			break;
-		}
+		if(0 == retwait)
+			continue;
 
-		if (IO_TYPE::TYPE_ACCEPT == pIOData->iotype)
+		if (IO_TYPE::TYPE_ACCEPT == ioEvent.pIOData->iotype)
 		{
-			printf("New client<socket=%d> join.\n", (int)pIOData->sockfd);
-			HANDLE ret = CreateIoCompletionPort((HANDLE)pIOData->sockfd, _completionPort, (ULONG_PTR)pIOData->sockfd, 0);
-			if (NULL == ret)
+			printf("New client<socket=%d> join.\n", (int)ioEvent.pIOData->sockfd);
+			if (!iocp.reg(ioEvent.pIOData->sockfd))
 			{
-				printf("CreateIoCompletionPort fail with error %d\n", GetLastError());
-				closesocket(pIOData->sockfd);
+				//printf("CreateIoCompletionPort fail with error %d\n", GetLastError());
+				closesocket(ioEvent.pIOData->sockfd);
+				iocp.postAccept(ioEvent.pIOData);
 				continue;
 			}
-			postRecv(pIOData);
+			iocp.postRecv(ioEvent.pIOData);
 		}
-		else if (IO_TYPE::TYPE_RECV == pIOData->iotype)
+		else if (IO_TYPE::TYPE_RECV == ioEvent.pIOData->iotype)
 		{
-			if (bytesTrans <= 0)
+			if (ioEvent.bytesTrans <= 0)
 			{
-				printf("close socket<%d>. bytesTrans=%d\n", (int)pIOData->sockfd, (int)bytesTrans);
-				closesocket(pIOData->sockfd);
+				printf("close socket<%d>. bytesTrans=%d\n", (int)ioEvent.pIOData->sockfd, (int)ioEvent.bytesTrans);
+				closesocket(ioEvent.pIOData->sockfd);
+				iocp.postAccept(ioEvent.pIOData);
 				continue;
 			}
-			printf("WSARecv() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)pIOData->sockfd, (int)bytesTrans, ++msgCount);
-			pIOData->length = bytesTrans;
-			postSend(pIOData);
+			//printf("WSARecv() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)ioEvent.pIOData->sockfd, (int)ioEvent.bytesTrans, ++msgCount);
+			ioEvent.pIOData->length = ioEvent.bytesTrans;
+			iocp.postSend(ioEvent.pIOData);
 		}
-		else if (IO_TYPE::TYPE_SEND == pIOData->iotype)
+		else if (IO_TYPE::TYPE_SEND == ioEvent.pIOData->iotype)
 		{
-			if (bytesTrans <= 0)
+			if (ioEvent.bytesTrans <= 0)
 			{
-				printf("close socket<%d>. bytesTrans=%d\n", (int)pIOData->sockfd, (int)bytesTrans);
-				closesocket(pIOData->sockfd);
+				printf("close socket<%d>. bytesTrans=%d\n", (int)ioEvent.pIOData->sockfd, (int)ioEvent.bytesTrans);
+				closesocket(ioEvent.pIOData->sockfd);
+				iocp.postAccept(ioEvent.pIOData);
 				continue;
 			}
-			printf("WSASend() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)pIOData->sockfd, (int)bytesTrans, msgCount);
-			postRecv(pIOData);
+			//printf("WSASend() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)ioEvent.pIOData->sockfd, (int)ioEvent.bytesTrans, msgCount);
+			iocp.postRecv(ioEvent.pIOData);
 		}
 		else
 		{
-			printf("Invalid socket<%d>\n", (int)pIOData->sockfd);
+			printf("Invalid socket<%d>\n", (int)ioEvent.pIOData->sockfd);
 		}
 	}
 
@@ -287,7 +133,8 @@ int main(int argc, char* args[])
 	{
 		closesocket(ioData[n].sockfd);
 	}
-	CloseHandle(_completionPort);
+	
+	iocp.destory();
 	WSACleanup();
 	return 0;
 }
