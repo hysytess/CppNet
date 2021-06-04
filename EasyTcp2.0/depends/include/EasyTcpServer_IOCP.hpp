@@ -54,7 +54,7 @@ protected:
 			{
 				iocp.postAccept(&ioData);
 				IOCP_Accept(ioEvent.pIOData->sockfd);
-				CellLog_Debug("New client<socket=%d> join.\n", (int)ioEvent.pIOData->sockfd);
+				//CellLog_Debug("New client<socket=%d> join.\n", (int)ioEvent.pIOData->sockfd);
 			}
 
 		}	

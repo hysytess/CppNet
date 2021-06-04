@@ -1,8 +1,9 @@
 #ifndef _MYCLIENT_HPP_
 #define _MYCLIENT_HPP_
 
-#include "../depends/include/EasyTcpClient_Select.hpp"
-#include "../depends/include/EasyTcpClient_Epoll.hpp"
+//#include "../depends/include/EasyTcpClient_Select.hpp"
+//#include "../depends/include/EasyTcpClient_Epoll.hpp"
+#include "../depends/include/EasyTcpClient_IOCP.hpp"
 #include "../depends/include/CellConfig.hpp"
 
 #include <thread>
@@ -24,7 +25,7 @@ int nWorkSleep = 1;
 int nSendBuffSize = SEND_BUFF_SZIE;
 int nRecvBuffSize = RECV_BUFF_SZIE;
 
-class MyClient : public EasyTcpClient_Select
+class MyClient : public EasyTcpClient_IOCP
 {
 public:
 	MyClient()

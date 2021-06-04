@@ -2,6 +2,10 @@
 #define _CellServer_IOCP_HPP_
 #ifdef _WIN32
 
+#ifndef CELL_USE_IOCP
+#define CELL_USE_IOCP
+#endif
+
 #include "CellServer_2.hpp"
 #include "CellIOCP.hpp"
 
@@ -39,6 +43,17 @@ public:
 							iter = _clients.erase(iter);
 						continue;
 
+					}
+				}
+				pIoData = pClient->makeRecvIOData();
+				if (pIoData)
+				{
+					if (!_iocp.postRecv(pIoData))
+					{
+						onClientLeave(pClient);
+						if (iter != _clients.end())
+							iter = _clients.erase(iter);
+						continue;
 					}
 				}
 			}
@@ -94,7 +109,7 @@ public:
 
 			if (_ioEvent.bytesTrans <= 0)
 			{
-				CellLog_Debug("close socket<%d>. bytesTrans=%d\n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
+				//CellLog_Debug("close socket<%d>. bytesTrans=%d\n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
 				rmClient(_ioEvent);
 				return ret;
 			}
@@ -105,7 +120,7 @@ public:
 				OnNetRecv(pClient);
 			}
 			
-			CellLog_Debug("WSARecv() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
+			//CellLog_Debug("WSARecv() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
 			
 			//auto pIoData = pClient->makeRecvIOData();
 			//if (pIoData)
@@ -115,7 +130,7 @@ public:
 		{
 			if (_ioEvent.bytesTrans <= 0)
 			{
-				CellLog_Debug("close socket<%d>. bytesTrans=%d\n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
+				//CellLog_Debug("close socket<%d>. bytesTrans=%d\n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
 				rmClient(_ioEvent);
 				return ret;
 			}

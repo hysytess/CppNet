@@ -103,17 +103,22 @@ public:
 			// 判断接收情况
 			if (nLen > 0)
 			{
-				while (_pClient->hasMsg())
-				{
-					// 处理接收到完整的数据
-					OnNetMsg(_pClient->front_msg());
-					// 移除在缓冲区队列头 已处理的数据
-					_pClient->pop_front_msg();
-				}
+				DoMsg();
 			}
 			return nLen;
 		}
 		return 0;
+	}
+
+	void DoMsg()
+	{
+		while (_pClient->hasMsg())
+		{
+			// 处理接收到完整的数据
+			OnNetMsg(_pClient->front_msg());
+			// 移除在缓冲区队列头 已处理的数据
+			_pClient->pop_front_msg();
+		}
 	}
 
 	virtual void OnNetMsg(netmsg_DataHeader* header) = 0;
