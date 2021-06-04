@@ -95,10 +95,13 @@ public:
 	}
 
 	//向IOCP投递接受连接任务
-	void postAccept(IO_DATA_BASE* pIO_DATA)
+	bool postAccept(IO_DATA_BASE* pIO_DATA)
 	{
 		if (!_lpfnAcceptEx)
+		{
 			printf("error, postAccept() _lpfnAcceptEx is null\n");
+			return false;
+		}
 
 		pIO_DATA->iotype = IO_TYPE::TYPE_ACCEPT;
 		pIO_DATA->sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -117,9 +120,10 @@ public:
 			if (ERROR_IO_PENDING != err)
 			{
 				printf("AcceptEx() fail errno:%d\n", err);
-				return;
+				return false;
 			}
 		}
+		return true;
 	}
 
 	//向IOCP投递接收数据任务
@@ -153,7 +157,7 @@ public:
 	}
 
 	//向IOCP投递发送数据任务
-	void postSend(IO_DATA_BASE* pIO_DATA)
+	bool postSend(IO_DATA_BASE* pIO_DATA)
 	{
 		pIO_DATA->iotype = IO_TYPE::TYPE_SEND;
 
@@ -173,10 +177,15 @@ public:
 			int err = WSAGetLastError();
 			if (ERROR_IO_PENDING != err)
 			{
+				if (WSAECONNRESET == err)
+				{
+					return false;
+				}
 				printf("WSASend() fail. errno:%d\n", err);
-				return;
+				return false;
 			}
 		}
+		return true;
 	}
 
 	int wait(IOCP_EVENT& ev,int timeout = 1)
@@ -199,7 +208,9 @@ public:
 
 			if (ERROR_NETNAME_DELETED == err)
 				return 1;
-
+			if (ERROR_CONNECTION_ABORTED == err)
+				return 1;
+			
 			printf("GetQueuedCompletionStatus:Overlapped I/O operation is in progress. errno:%d\n", GetLastError());
 			return -1;
 		}

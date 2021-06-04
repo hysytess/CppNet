@@ -91,21 +91,27 @@ public:
 		auto dt = nowTime - _old_time;
 		_old_time = nowTime;
 
+		ClientSocket* pClient = nullptr;
 		for (auto iter = _clients.begin(); iter != _clients.end();)
 		{
-			if (iter->second->checkHeart(dt))
+			pClient = iter->second;
+			if (pClient->checkHeart(dt))
 			{
-				if (_pNetEvent)
-					_pNetEvent->OnLeave(iter->second);
-				_clients_change = true;
-				delete iter->second;
-				auto iterOld = iter;
-				iter++;
-				_clients.erase(iterOld);
-				continue;
+#ifdef CELL_USE_IOCP
+				if (pClient->isPostIoAction())
+					pClient->destory();
+				else
+					onClientLeave(pClient);
+#else
+				onClientLeave(pClient);
+#endif
+				//auto iterOld = iter;
+				//iter++;
+				 iter = _clients.erase(iter); //iterOld
+				 continue;
 			}
 			//超时发送
-			//iter->second->checkSend(dt);
+			//pClient->checkSend(dt);
 			iter++;
 		}
 	}
@@ -119,6 +125,12 @@ public:
 	}
 
 	virtual void onClientJoin(ClientSocket* pClient){}
+
+	void OnNetRecv(ClientSocket* pClient)
+	{
+		if (_pNetEvent)
+			_pNetEvent->OnNetRecv(pClient);
+	}
 
 	void DoMsg()
 	{
@@ -146,7 +158,8 @@ public:
 			return -1;
 		}
 		// 触发接收事件 【pClient】 对象
-		_pNetEvent->OnNetRecv(pClient);
+		if(_pNetEvent)
+			_pNetEvent->OnNetRecv(pClient);
 
 		return 0;
 	}
@@ -154,7 +167,8 @@ public:
 	virtual void OnNetMsg(ClientSocket* pClient, netmsg_DataHeader* header)
 	{
 		// 触发网络事件.
-		_pNetEvent->OnNetMsg(this, pClient, header);
+		if(_pNetEvent)
+			_pNetEvent->OnNetMsg(this, pClient, header);
 	}
 
 	void addClient(ClientSocket* pClient)

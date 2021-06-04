@@ -23,47 +23,60 @@ public:
 
 	bool DoNetEvent()
 	{
-		//for (auto iter : _clients)
-		//{
-		//	if (iter.second->needWrite())
-		//	{
-		//		_ep.ctl(EPOLL_CTL_MOD,iter.second,EPOLLIN|EPOLLOUT);
-		//	}
-		//	else
-		//	{
-		//		_ep.ctl(EPOLL_CTL_MOD,iter.second,EPOLLIN);
-		//	}
-		//}
-
-		int ret = DoIocpNetEvent();
-		if (ret < 0)
+		ClientSocket* pClient = nullptr;
+		for (auto iter = _clients.begin(); iter != _clients.end();)
 		{
-			perror("CellServer_Epoll.OnRun.Wait Eorr exit");
-			return false;
-		}
-		else if (ret == 0)
-			return true;
+			pClient = iter->second;
+			if (pClient->needWrite())
+			{
+				auto pIoData = pClient->makeSendIOData();
+				if (pIoData)
+				{
+					if (!_iocp.postSend(pIoData))
+					{
+						onClientLeave(pClient);
+						if (iter != _clients.end())
+							iter = _clients.erase(iter);
+						continue;
 
+					}
+				}
+			}
+			else
+			{
+				auto pIoData = pClient->makeRecvIOData();
+				if (pIoData)
+				{
+					if (!_iocp.postRecv(pIoData))
+					{
+						onClientLeave(pClient);
+						if (iter != _clients.end())
+							iter = _clients.erase(iter);
+						continue;
+					}
+				}
+			}
+			iter++;
+		}
+
+		while (true)
+		{
+			int ret = DoIocpNetEvent();
+			if (ret < 0)
+			{
+				perror("CellServer_Epoll.OnRun.Wait Eorr exit");
+				return false;
+			}
+			else if (ret == 0)
+				break;
+		}
 		return true; 
 	}
 
-	void rmClient(ClientSocket* pClient)
-	{
-		auto iter = _clients.find(pClient->sockfd());
-		if (iter != _clients.end())
-			_clients.erase(iter);
-		
-		onClientLeave(pClient);
-
-	}
-
-	void onClientJoin(ClientSocket* pClient)
-	{
-		_iocp.reg(pClient->sockfd(), pClient);
-		auto pIoData = pClient->makeRecvIOData();
-		if(pIoData)
-			_iocp.postRecv(pIoData);
-	}
+	// 每次只处理一件网络事件
+	// ret = -1 iocp error
+	// ret =  0 nothing events
+	// ret =  1 has net-events
 
 	int DoIocpNetEvent()
 	{
@@ -78,16 +91,19 @@ public:
 
 		if (IO_TYPE::TYPE_RECV == _ioEvent.pIOData->iotype)
 		{
+
 			if (_ioEvent.bytesTrans <= 0)
 			{
 				CellLog_Debug("close socket<%d>. bytesTrans=%d\n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
-				CellNetWork::destorySocket(_ioEvent.pIOData->sockfd);
-				_iocp.postAccept(_ioEvent.pIOData);
+				rmClient(_ioEvent);
 				return ret;
 			}
 			ClientSocket* pClient = (ClientSocket*)_ioEvent.data.ptr;
-			if (pClient)
+			if (pClient) 
+			{
 				pClient->recv4IOCP(_ioEvent.bytesTrans);
+				OnNetRecv(pClient);
+			}
 			
 			CellLog_Debug("WSARecv() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
 			
@@ -95,23 +111,49 @@ public:
 			//if (pIoData)
 			//	_iocp.postRecv(pClient->makeRecvIOData());
 		}
-		//else if (IO_TYPE::TYPE_SEND == _ioEvent.pIOData->iotype)
-		//{
-		//	if (_ioEvent.bytesTrans <= 0)
-		//	{
-		//		CellLog_Debug("close socket<%d>. bytesTrans=%d\n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
-		//		closesocket(_ioEvent.pIOData->sockfd);
-		//		_iocp.postAccept(_ioEvent.pIOData);
-		//		continue;
-		//	}
-		//	//printf("WSASend() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)ioEvent.pIOData->sockfd, (int)ioEvent.bytesTrans, msgCount);
-		//	_iocp.postRecv(_ioEvent.pIOData);
-		//}
+		else if (IO_TYPE::TYPE_SEND == _ioEvent.pIOData->iotype)
+		{
+			if (_ioEvent.bytesTrans <= 0)
+			{
+				CellLog_Debug("close socket<%d>. bytesTrans=%d\n", (int)_ioEvent.pIOData->sockfd, (int)_ioEvent.bytesTrans);
+				rmClient(_ioEvent);
+				return ret;
+			}
+			ClientSocket* pClient = (ClientSocket*)_ioEvent.data.ptr;
+			if (pClient)
+				pClient->send2IOCP(_ioEvent.bytesTrans);
+			//printf("WSASend() socket<%d>. bytesTrans=%d msgCount=%d \n", (int)ioEvent.pIOData->sockfd, (int)ioEvent.bytesTrans, msgCount);
+			//_iocp.postRecv(_ioEvent.pIOData);
+		}
 		else
 		{
-			CellLog_Debug("Invalid socket<%d>\n", (int)_ioEvent.data.fd);
+			CellLog_Warring("undefine action.\n");
 		}
 		return ret;
+	}
+
+	void rmClient(ClientSocket* pClient)
+	{
+		auto iter = _clients.find(pClient->sockfd());
+		if (iter != _clients.end())
+			_clients.erase(iter);
+
+		onClientLeave(pClient);
+	}
+
+	void rmClient(IOCP_EVENT ioEvent)
+	{
+		ClientSocket* pClient = (ClientSocket*)_ioEvent.data.ptr;
+		if (pClient)
+			rmClient(pClient);
+	}
+
+	void onClientJoin(ClientSocket* pClient)
+	{
+		_iocp.reg(pClient->sockfd(), pClient);
+		auto pIoData = pClient->makeRecvIOData();
+		if (pIoData)
+			_iocp.postRecv(pIoData);
 	}
 
 private:

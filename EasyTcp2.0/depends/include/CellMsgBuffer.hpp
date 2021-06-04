@@ -175,13 +175,47 @@ public:
 
 	bool read4iocp(int nRecv)
 	{
-		if (_nSize - _nLast >= nRecv)
+		if (nRecv > 0 && _nSize - _nLast >= nRecv)
 		{
 			_nLast += nRecv;
 			return true;
 		}
 		return false;
 	}
+
+	// 
+
+	IO_DATA_BASE* makeSendIOData(SOCKET sockfd)
+	{
+		if (_nLast > 0)
+		{
+			_ioData.wsBuff.buf = _pBuff;
+			_ioData.wsBuff.len = _nLast;
+			_ioData.sockfd = sockfd;
+			return &_ioData;
+		}
+		return nullptr;
+	}
+
+	bool wirte2iocp(int nSend)
+	{
+		if (_nLast < nSend)
+		{
+			return false;
+		}
+		if (_nLast == nSend)
+		{
+			_nLast = 0;
+		}
+		else
+		{
+			_nLast -= nSend;
+			memcpy(_pBuff, _pBuff + nSend, _nLast);
+		}
+		_buffFullCount = 0;
+		return true;
+	}
+
 #endif // CELL_USE_IOCP
 
 

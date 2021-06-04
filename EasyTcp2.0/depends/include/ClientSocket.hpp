@@ -31,6 +31,11 @@ public:
 	~ClientSocket()
 	{
 		//CellLog_Debug("s=%d CellClient%d closed.code:1",serverId, id);
+		destory();
+	}
+
+	void destory()
+	{
 		if (INVALID_SOCKET != _sockfd)
 		{
 			CellNetWork::destorySocket(_sockfd);
@@ -130,14 +135,49 @@ public:
 		return false;
 	}
 #ifdef CELL_USE_IOCP
+	// IOCP recv
 	inline IO_DATA_BASE* makeRecvIOData()
 	{
+		if (_isPostRecv)
+		{
+			//printf("Error\n");
+			return nullptr;
+		}
+		_isPostRecv = true;
 		return _recvBuff.makeRecvIOData(_sockfd);
 	}
 	void recv4IOCP(int nRecv)
 	{
+		if (!_isPostRecv);
+			//printf("Error\n");
+		_isPostRecv = false;
 		_recvBuff.read4iocp(nRecv);
 	}
+
+	// IOCP send
+	inline IO_DATA_BASE* makeSendIOData()
+	{
+		if (_isPostSend)
+		{
+			//printf("Error\n");
+			return nullptr;
+		}
+		_isPostSend = true;
+		return _sendBuff.makeSendIOData(_sockfd);
+	}
+	void send2IOCP(int nSend)
+	{
+		if (!_isPostSend);
+		//printf("Error\n");
+		_isPostSend = false;
+		_sendBuff.wirte2iocp(nSend);
+	}
+
+	bool isPostIoAction()
+	{
+		return _isPostRecv || _isPostSend;
+	}
+
 #endif // CELL_USE_IOCP
 
 private:
@@ -155,6 +195,10 @@ private:
 	// 发送缓冲区溢满计数
 	int _sendBuffFullCount = 0;
 
+#ifdef CELL_USE_IOCP
+	bool _isPostRecv = false;
+	bool _isPostSend = false;
+#endif
 
 };
 
