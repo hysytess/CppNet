@@ -1,4 +1,4 @@
-﻿#ifndef _EasyEpollServer_hpp_
+#ifndef _EasyEpollServer_hpp_
 #define _EasyEpollServer_hpp_
 
 #include"EasyTcpServer.hpp"

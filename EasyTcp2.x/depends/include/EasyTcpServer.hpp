@@ -149,6 +149,7 @@ public:
 		{	
 			if (_clientAccept < _nMaxClient)
 			{
+				_clientAccept++;
 				CELLNetWork::make_reuseaddr(cSock);
 				//将新客户端分配给客户数量最少的cellServer
 				addClientToCELLServer(new CELLClient(cSock, _nSendBuffSize, _nRecvBuffSize));

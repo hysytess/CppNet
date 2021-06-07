@@ -10,7 +10,11 @@ class CELLEpollServer:public CELLServer
 public:
 	CELLEpollServer()
 	{
-		_ep.create(10240);
+	}
+
+	virtual void setClientNum(int nSocketNum = 102400)
+	{
+		_ep.create(nSocketNum);
 	}
 
 	~CELLEpollServer() noexcept

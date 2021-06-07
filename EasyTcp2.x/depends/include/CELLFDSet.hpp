@@ -33,6 +33,7 @@ public:
 #endif // _WIN32
 		_pfdset = (fd_set *)new char[_nfdSize];
 		memset(_pfdset, 0, _nfdSize);
+		_MAX_SOCK_FD = nSocketNum;
 	}
 
 	void destory()
@@ -49,7 +50,7 @@ public:
 #ifdef _WIN32
 		FD_SET(s, _pfdset);
 #else
-		if(s < CELL_MAX_FD)
+		if(s < _MAX_SOCK_FD)
 		{
 			FD_SET(s, _pfdset);
 		}else{
@@ -89,6 +90,7 @@ public:
 private:
 	fd_set * _pfdset = nullptr;
 	size_t _nfdSize = 0;
+	int _MAX_SOCK_FD = 0;
 };
 
 
