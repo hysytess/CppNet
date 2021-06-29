@@ -1,4 +1,4 @@
-﻿#ifndef _CELL_SEMAPHORE_HPP_
+#ifndef _CELL_SEMAPHORE_HPP_
 #define _CELL_SEMAPHORE_HPP_
 
 #include<chrono>
@@ -15,7 +15,7 @@ public:
 		std::unique_lock<std::mutex> lock(_mutex);
 		if (--_wait < 0)
 		{
-			//阻塞等待
+			//阻塞等待 等待条件 _wakeup > 0
 			_cv.wait(lock, [this]()->bool{
 				return _wakeup > 0;
 			});

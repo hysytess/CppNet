@@ -178,6 +178,7 @@ public:
 		pMinServer->addClient(pClient);
 	}
 
+	// 启动并实例化cellserver作业类
 	template<class ServerT>
 	void Start(int nCELLServer)
 	{
@@ -187,7 +188,7 @@ public:
 			ser->setId(n + 1);
 			ser->setClientNum((_nMaxClient / nCELLServer) + 1);
 			_cellServers.push_back(ser);
-			//注册网络事件接受对象
+			//注册网络事件接受对象 // 其实就是父类指针获得子类this指针,通过这一行为可以向父类其他类发出通知.
 			ser->setEventObj(this);
 			//启动消息处理线程
 			ser->Start();
@@ -247,9 +248,11 @@ protected:
 	//处理网络消息
 	virtual void OnRun(CELLThread* pThread) = 0;
 
+	// 在该类创建时 计时类就会被创建、旧时间戳会获得初始化的那一刻的时间.
 	//计算并输出每秒收到的网络消息
 	void time4msg()
 	{
+		// 计算时间, 当前时间戳 - 上一次记录的旧时间戳. 大于等于 1秒 则输出
 		auto t1 = _tTime.getElapsedSecond();
 		if (t1 >= 1.0)
 		{
@@ -264,6 +267,7 @@ protected:
 			);
 			_recvCount = 0;
 			_msgCount = 0;
+			// 更新获取当前时间 并记录到旧时间戳
 			_tTime.update();
 		}
 	}

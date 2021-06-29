@@ -5,6 +5,7 @@
 #include"CELLSelectServer.hpp"
 #include"CELLFDSet.hpp"
 
+// 负责接受客户链接
 class EasySelectServer : public EasyTcpServer
 {
 public:
